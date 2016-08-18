@@ -17,47 +17,48 @@ import java.io.IOException;
  */
 
 public class Connection {
+
     private static final Logger LOGGER = Logger.getLogger(Connection.class.getSimpleName());
 
     public static String sendRequest(String command) throws IOException {
 
-        LOGGER.info("CommandMumu: " + command);
-        String lunchItems = "";
         String url[] = new String[2];
-        if (command.equals(Constants.MONDAY)) {
-            url[0] = "http://cafemumu.ru/menu/item/133/";
-            url[1] = "http://cafemumu.ru/menu/item/134/";
+        switch (command) {
+            case Constants.MONDAY:
+                url[0] = "http://cafemumu.ru/menu/item/133/";
+                url[1] = "http://cafemumu.ru/menu/item/134/";
+                return getMumuLunch(url);
+            case Constants.TUESDAY:
+                url[0] = "http://cafemumu.ru/menu/item/135/";
+                url[1] = "http://cafemumu.ru/menu/item/136/";
+                return getMumuLunch(url);
+            case Constants.WEDNESDAY:
+                url[0] = "http://cafemumu.ru/menu/item/137/";
+                url[1] = "http://cafemumu.ru/menu/item/138/";
+                return getMumuLunch(url);
+            case Constants.THURSDAY:
+                url[0] = "http://cafemumu.ru/menu/item/139/";
+                url[1] = "http://cafemumu.ru/menu/item/140/";
+                return getMumuLunch(url);
+            case Constants.FRIDAY:
+                url[0] = "http://cafemumu.ru/menu/item/141/";
+                url[1] = "http://cafemumu.ru/menu/item/142/";
+                return getMumuLunch(url);
+            case Constants.VICTORIA:
+                url[0] = "http://restaurantgrandvictoria.ru/lunch";
+                return getVictoriaLunch(url[0]);
+            default:
+                return "Bad command! ".concat(command);
         }
+    }
 
-        if (command.equals(Constants.TUESDAY)) {
-            url[0] = "http://cafemumu.ru/menu/item/135/";
-            url[1] = "http://cafemumu.ru/menu/item/136/";
-        }
-
-        if (command.equals(Constants.WEDNESDAY)) {
-            url[0] = "http://cafemumu.ru/menu/item/137/";
-            url[1] = "http://cafemumu.ru/menu/item/138/";
-        }
-
-        if (command.equals(Constants.THURSDAY)) {
-            url[0] = "http://cafemumu.ru/menu/item/139/";
-            url[1] = "http://cafemumu.ru/menu/item/140/";
-        }
-        if (command.equals(Constants.FRIDAY)) {
-            url[0] = "http://cafemumu.ru/menu/item/141/";
-            url[1] = "http://cafemumu.ru/menu/item/142/";
-        }
-
+    private static String getMumuLunch(String[] url) throws IOException {
+        String lunchItems = "";
         String price = "";
         String timeLunch = "Время обедов в МУ-МУ: 12:00-16:00";
         try {
             for (String strURL : url) {
-
-                LOGGER.info("ConnectTo: " + strURL);
-                HttpClient client = HttpClientBuilder.create().build();
-                HttpGet request = new HttpGet(strURL);
-                HttpResponse response = client.execute(request);
-                LOGGER.info("Response Code: " + response.getStatusLine().getStatusCode());
+                getResponseCode(strURL);
 
                 Document doc = Jsoup.connect(strURL).get();
                 Elements elements = doc.select("div");
@@ -89,21 +90,13 @@ public class Connection {
         return timeLunch.concat("\n").concat(price.concat("\n").concat(lunchItems));
     }
 
-    public static String sendRequestVictoria(String commandVictoria) throws IOException {
-        LOGGER.info("CommandVictoria: " + commandVictoria);
-        String lunchItems = "";
-        String url = "";
 
-        if (commandVictoria.equals(Constants.VIСTORIA)) {
-            url = "http://restaurantgrandvictoria.ru/lunch";
-        }
-        String info = "";
+    private static String getVictoriaLunch(String url) throws IOException {
+        String lunchItems = "";
+        String date = "";
+
         try {
-            LOGGER.info("ConnectTo: " + url);
-            HttpClient client = HttpClientBuilder.create().build();
-            HttpGet request = new HttpGet(url);
-            HttpResponse response = client.execute(request);
-            LOGGER.info("Response Code: " + response.getStatusLine().getStatusCode());
+            getResponseCode(url);
 
             Document doc = Jsoup.connect(url).get();
             Elements elements = doc.select("td");
@@ -113,7 +106,7 @@ public class Connection {
                     String[] arrStr = item.text().split("\n");
 
                     for (String str : arrStr) {
-                        info += str.concat(".");
+                        date += str.concat(".");
                     }
                 }
                 if (item.attr("class").equals("mdish")) {
@@ -121,17 +114,23 @@ public class Connection {
 
                     for (String str : arrStr) {
                         lunchItems += str.concat("\n");
-
                     }
                 }
             }
-            LOGGER.info("info: " + info);
+            LOGGER.info("date: " + date);
             LOGGER.info("LUNCH_VICTORIA = " + lunchItems);
 
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
         }
+        return date.concat("\n").concat(lunchItems);
+    }
 
-        return info.concat("\n").concat(lunchItems);
+    private static void getResponseCode(String url) throws IOException {
+        LOGGER.info("ConnectTo: " + url);
+        HttpClient client = HttpClientBuilder.create().build();
+        HttpGet request = new HttpGet(url);
+        HttpResponse response = client.execute(request);
+        LOGGER.info("Response Code: " + response.getStatusLine().getStatusCode());
     }
 }

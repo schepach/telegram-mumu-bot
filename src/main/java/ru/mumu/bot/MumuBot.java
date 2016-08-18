@@ -32,37 +32,33 @@ public class MumuBot extends TelegramLongPollingBot {
             LOGGER.info("CommandInput: " + message.getText());
 
             try {
-                if (message.getText().equals("/help")) {
-                    LOGGER.info("Response: " + Constants.HELP);
-                    sendMsg(message, Constants.HELP);
-                } else if (message.getText().equals("/start")) {
-                    LOGGER.info("Response: " + Constants.START);
-                    sendMsg(message, Constants.START);
-                } else if (message.getText().toLowerCase().equals(Constants.MONDAY) || message.getText().toLowerCase().equals(Constants.MONDAY_1)) {
+                if (message.getText().equals(Constants.HELP)) {
+                    LOGGER.info("Response: " + Constants.HELP_TEXT);
+                    sendMsg(message, Constants.HELP_TEXT);
+                } else if (message.getText().equals(Constants.START)) {
+                    LOGGER.info("Response: " + Constants.START_TEXT);
+                    sendMsg(message, Constants.START_TEXT);
+                } else if (message.getText().toLowerCase().equals(Constants.MONDAY)) {
                     result = Connection.sendRequest(Constants.MONDAY);
                     sendMsg(message, result);
 
-                } else if (message.getText().toLowerCase().equals(Constants.TUESDAY) || message.getText().toLowerCase().equals(Constants.TUESDAY_2)) {
+                } else if (message.getText().toLowerCase().equals(Constants.TUESDAY)) {
                     result = Connection.sendRequest(Constants.TUESDAY);
                     sendMsg(message, result);
 
-                } else if (message.getText().toLowerCase().equals(Constants.WEDNESDAY) || message.getText().toLowerCase().equals(Constants.WEDNESDAY_3)) {
+                } else if (message.getText().toLowerCase().equals(Constants.WEDNESDAY)) {
                     result = Connection.sendRequest(Constants.WEDNESDAY);
                     sendMsg(message, result);
 
-                } else if (message.getText().toLowerCase().equals(Constants.THURSDAY) || message.getText().toLowerCase().equals(Constants.THURSDAY_4)) {
+                } else if (message.getText().toLowerCase().equals(Constants.THURSDAY)) {
                     result = Connection.sendRequest(Constants.THURSDAY);
                     sendMsg(message, result);
-                } else if (message.getText().toLowerCase().equals(Constants.FRIDAY) || message.getText().toLowerCase().equals(Constants.FRIDAY_5)) {
+                } else if (message.getText().toLowerCase().equals(Constants.FRIDAY)) {
                     result = Connection.sendRequest(Constants.FRIDAY);
                     sendMsg(message, result);
 
-                } else if (message.getText().toLowerCase().equals(Constants.SATURDAY) || message.getText().toLowerCase().equals(Constants.SUNDAY)
-                        || message.getText().toLowerCase().equals(Constants.SATURDAY_6) || message.getText().toLowerCase().equals(Constants.SUNDAY_7)) {
-                    LOGGER.info("Response: " + Constants.ERROR_HOLIDAY);
-                    sendMsg(message, Constants.ERROR_HOLIDAY);
-                } else if (message.getText().toLowerCase().equals(Constants.VIСTORIA)) {
-                    result = Connection.sendRequestVictoria(Constants.VIСTORIA);
+                } else if (message.getText().toLowerCase().equals(Constants.VICTORIA)) {
+                    result = Connection.sendRequest(Constants.VICTORIA);
                     sendMsg(message, result);
                 } else {
                     LOGGER.info("Response: " + Constants.ERROR_OTHER_INPUT);
