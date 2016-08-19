@@ -24,7 +24,6 @@ public class MumuBot extends TelegramLongPollingBot {
 
     private static final Logger LOGGER = Logger.getLogger(MumuBot.class.getSimpleName());
     private final static Calendar calendar = Calendar.getInstance();
-    private final String currentDay = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(calendar.getTime());
 
     public void onUpdateReceived(Update update) {
         String result;
@@ -32,6 +31,7 @@ public class MumuBot extends TelegramLongPollingBot {
         Message message = update.getMessage();
         if (message != null && message.hasText()) {
 
+            String currentDay = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(calendar.getTime());
             Date messageDate = new Date((long) message.getDate() * 1000);
             String messageDay = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(messageDate.getTime());
 
