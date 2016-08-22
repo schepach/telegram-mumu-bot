@@ -23,10 +23,10 @@ import java.util.Locale;
 public class MumuBot extends TelegramLongPollingBot {
 
     private static final Logger LOGGER = Logger.getLogger(MumuBot.class.getSimpleName());
-    private final static Calendar calendar = Calendar.getInstance();
 
     public void onUpdateReceived(Update update) {
         String result;
+        Calendar calendar = Calendar.getInstance();
 
         Message message = update.getMessage();
         if (message != null && message.hasText()) {
