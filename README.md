@@ -1,4 +1,5 @@
 # TelegramMumuBot
-This telegram bot for cafe "mumu". He does show list lunch for you.
+This is Telegram bot for cafe "mumu". 
+He shows list lunch for you.
 
 Search him in Telegram: @lunchmumubot
