@@ -15,7 +15,7 @@ public class Constants {
                     "/victoria\n" +
                     "/help\n" +
                     "/today\n" +
-                    "Command 'victoria' for lunch in Grand Victoria cafe :)";
+                    "Command '/victoria' for lunch in Grand Victoria cafe :)";
     public static final String START_TEXT = "If you want eat - enter command. /help - помощь";
     public static final String HELP = "/help";
     public static final String START = "/start";

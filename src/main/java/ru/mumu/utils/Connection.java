@@ -21,8 +21,8 @@ public class Connection {
     private static final Logger LOGGER = Logger.getLogger(Connection.class.getSimpleName());
 
     public static String checkDay(String currentDay, String messageDay) throws IOException {
-        LOGGER.info("currentDay = " + currentDay);
-        LOGGER.info("messageDay = " + messageDay);
+        LOGGER.info("currentDay:  " + currentDay);
+        LOGGER.info("messageDay:  " + messageDay);
 
         if (currentDay.equals(messageDay)) {
             String weekDay = "/".concat(currentDay).toLowerCase();
@@ -94,10 +94,11 @@ public class Connection {
                     }
                 }
             }
-            LOGGER.info("LUNCH = " + lunchItems);
+            LOGGER.info("\n" + lunchItems);
 
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
+            return "Что-то пошло не так: ".concat(e.getMessage());
         }
 
         return timeLunch.concat("\n").concat(price.concat("\n").concat(lunchItems));
@@ -131,10 +132,11 @@ public class Connection {
                 }
             }
             LOGGER.info("date: " + date);
-            LOGGER.info("LUNCH_VICTORIA = " + lunchItems);
+            LOGGER.info("LUNCH_VICTORIA: \n" + lunchItems);
 
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
+            return "Что-то пошло не так: ".concat(e.getMessage());
         }
         return date.concat("\n").concat(lunchItems);
     }
