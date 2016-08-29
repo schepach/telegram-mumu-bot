@@ -12,6 +12,10 @@ import ru.mumu.utils.Constants;
 import ru.mumu.utils.reflection.ReflectionObjectPrinter;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by alexey on 08.08.16.
@@ -22,9 +26,15 @@ public class MumuBot extends TelegramLongPollingBot {
 
     public void onUpdateReceived(Update update) {
         String result;
+        Calendar calendar = Calendar.getInstance();
 
         Message message = update.getMessage();
         if (message != null && message.hasText()) {
+
+            String currentDay = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(calendar.getTime());
+            Date messageDate = new Date((long) message.getDate() * 1000);
+            String messageDay = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(messageDate.getTime());
+
             LOGGER.info("FirstName: " + ReflectionObjectPrinter.toString(message.getFrom().getFirstName()));
             LOGGER.info("LastName: " + ReflectionObjectPrinter.toString(message.getFrom().getLastName()));
             LOGGER.info("UserName: " + ReflectionObjectPrinter.toString(message.getFrom().getUserName()));
@@ -60,6 +70,9 @@ public class MumuBot extends TelegramLongPollingBot {
                 } else if (message.getText().toLowerCase().equals(Constants.VICTORIA)) {
                     result = Connection.sendRequest(Constants.VICTORIA);
                     sendMsg(message, result);
+                } else if (message.getText().toLowerCase().equals(Constants.TODAY)) {
+                    result = Connection.checkDay(currentDay, messageDay);
+                    sendMsg(message, result);
                 } else {
                     LOGGER.info("Response: " + Constants.ERROR_OTHER_INPUT);
                     sendMsg(message, Constants.ERROR_OTHER_INPUT);
@@ -90,4 +103,5 @@ public class MumuBot extends TelegramLongPollingBot {
     public String getBotToken() {
         return "bottoken";
     }
+
 }

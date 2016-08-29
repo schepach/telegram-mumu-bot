@@ -14,10 +14,12 @@ public class Constants {
                     "/friday\n" +
                     "/victoria\n" +
                     "/help\n" +
-                    "Command 'victoria' for lunch in Grand Victoria cafe :)";
+                    "/today\n" +
+                    "Command '/victoria' for lunch in Grand Victoria cafe :)";
     public static final String START_TEXT = "If you want eat - enter command. /help - помощь";
     public static final String HELP = "/help";
     public static final String START = "/start";
+    public static final String TODAY = "/today";
     public static final String MONDAY = "/monday";
     public static final String TUESDAY = "/tuesday";
     public static final String WEDNESDAY = "/wednesday";
