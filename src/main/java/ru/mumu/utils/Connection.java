@@ -24,12 +24,16 @@ public class Connection {
         LOGGER.info("currentDay:  " + currentDay);
         LOGGER.info("messageDay:  " + messageDay);
 
-        if (currentDay.equals(messageDay)) {
-            String weekDay = "/".concat(currentDay).toLowerCase();
-            LOGGER.info("WeekDay is : " + weekDay);
-            return sendRequest(weekDay);
+        if (currentDay.toLowerCase().equals("saturday") || currentDay.toLowerCase().equals("sunday")) {
+            return Constants.ERROR_OTHER_INPUT;
         } else {
-            return "Days are not equals!";
+            if (currentDay.equals(messageDay)) {
+                String weekDay = "/".concat(currentDay).toLowerCase();
+                LOGGER.info("WeekDay is : " + weekDay);
+                return sendRequest(weekDay);
+            } else {
+                return "Days are not equals!";
+            }
         }
     }
 
