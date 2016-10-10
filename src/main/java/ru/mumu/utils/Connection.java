@@ -11,6 +11,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by alexey on 08.08.16.
@@ -25,7 +27,7 @@ public class Connection {
         LOGGER.info("messageDay:  " + messageDay);
 
         if (currentDay.toLowerCase().equals("saturday") || currentDay.toLowerCase().equals("sunday")) {
-            return Constants.ERROR_OTHER_INPUT;
+            return Constants.ERROR_HOLIDAY_DAY;
         } else {
             if (currentDay.equals(messageDay)) {
                 String weekDay = "/".concat(currentDay).toLowerCase();
@@ -90,8 +92,16 @@ public class Connection {
                     if (element.attr("class").equals("caption")) {
                         String[] arrStr = element.select("span").first().text().split(",");
                         String item = "";
+                        int count = 0;
                         for (String s : arrStr) {
-                            item += s.concat("\n");
+                            if (s.contains("(перец")) {
+                                s = s.replaceAll("\\(перец", "");
+                            }
+                            if (checkString(s.trim())) {
+                                continue;
+                            }
+                            item += String.valueOf(count).concat(". ").concat(s.trim().concat("\n"));
+                            count++;
                         }
                         lunchItems += element.select("h1").first().text().concat(": ").concat("\n").concat(item).concat("\n");
                         break;
@@ -151,5 +161,11 @@ public class Connection {
         HttpGet request = new HttpGet(url);
         HttpResponse response = client.execute(request);
         LOGGER.info("Response Code: " + response.getStatusLine().getStatusCode());
+    }
+
+    private static boolean checkString(String str) {
+        Pattern p = Pattern.compile("горошек|кукуруза\\)");
+        Matcher m = p.matcher(str);
+        return m.matches();
     }
 }
