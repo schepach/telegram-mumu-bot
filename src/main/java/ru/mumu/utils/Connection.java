@@ -25,7 +25,7 @@ public class Connection {
         LOGGER.info("messageDay:  " + messageDay);
 
         if (currentDay.toLowerCase().equals("saturday") || currentDay.toLowerCase().equals("sunday")) {
-            return Constants.ERROR_OTHER_INPUT;
+            return Constants.ERROR_HOLIDAY_DAY;
         } else {
             if (currentDay.equals(messageDay)) {
                 String weekDay = "/".concat(currentDay).toLowerCase();
