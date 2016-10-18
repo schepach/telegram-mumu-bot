@@ -26,6 +26,7 @@ public class Constants {
     public static final String THURSDAY = "/thursday";
     public static final String FRIDAY = "/friday";
     public static final String VICTORIA = "/victoria";
+    public static final String ADDRESSES= "/addresses";
     public static final String ERROR_OTHER_INPUT = "Bad Command! Need enter workday. /help - помощь";
     public static final String ERROR_HOLIDAY_DAY = "Today is holiday! Need enter workday. /help - помощь";
 }
