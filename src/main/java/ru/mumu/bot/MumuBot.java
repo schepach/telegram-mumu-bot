@@ -70,6 +70,9 @@ public class MumuBot extends TelegramLongPollingBot {
                 } else if (message.getText().toLowerCase().equals(Constants.VICTORIA)) {
                     result = Connection.sendRequest(Constants.VICTORIA);
                     sendMsg(message, result);
+                } else if (message.getText().toLowerCase().equals(Constants.ADDRESSES)) {
+                    result = Connection.sendRequest(Constants.ADDRESSES);
+                    sendMsg(message, result);
                 } else if (message.getText().toLowerCase().equals(Constants.TODAY)) {
                     result = Connection.checkDay(currentDay, messageDay);
                     sendMsg(message, result);

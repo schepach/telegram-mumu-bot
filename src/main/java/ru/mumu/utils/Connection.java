@@ -66,6 +66,9 @@ public class Connection {
             case Constants.VICTORIA:
                 url[0] = "http://restaurantgrandvictoria.ru/lunch";
                 return getVictoriaLunch(url[0]);
+            case Constants.ADDRESSES:
+                url[0] = "http://zoon.ru/msk/restaurants/network/mu-mu/";
+                return getAddresses(url[0]);
             default:
                 return "Bad command! ".concat(command);
         }
@@ -153,6 +156,31 @@ public class Connection {
             return "Что-то пошло не так: ".concat(e.getMessage());
         }
         return date.concat("\n").concat(lunchItems);
+    }
+
+    private static String getAddresses(String url) throws IOException {
+        String addresses = "";
+
+        try {
+            getResponseCode(url);
+
+            Document doc = Jsoup.connect(url).get();
+            Elements elements = doc.select("address");
+
+            int count = 1;
+            for (Element item : elements) {
+                if (item.attr("class").equals("invisible-links")) {
+                    addresses += String.valueOf(count).concat(". ").concat(item.text().concat("\n"));
+                    count++;
+                }
+            }
+            LOGGER.info("ADDRESSES: \n" + addresses);
+
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage());
+            return "Что-то пошло не так: ".concat(e.getMessage());
+        }
+        return "Адреса кафе му-му: \n".concat(addresses);
     }
 
     private static void getResponseCode(String url) throws IOException {
