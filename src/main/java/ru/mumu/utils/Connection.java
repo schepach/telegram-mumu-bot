@@ -132,7 +132,9 @@ public class Connection {
             Document doc = Jsoup.connect(url).get();
             Elements elements = doc.select("td");
 
+            int count = 1;
             for (Element item : elements) {
+
                 if (item.attr("class").equals("text")) {
                     String[] arrStr = item.text().split("\n");
 
@@ -140,11 +142,12 @@ public class Connection {
                         date += str.concat(".");
                     }
                 }
-                if (item.attr("class").equals("mdish")) {
+                if (item.attr("class").equals("mdish") || item.attr("class").equals("mtext")) {
                     String[] arrStr = item.text().split("\n");
 
                     for (String str : arrStr) {
-                        lunchItems += str.concat("\n");
+                        lunchItems += String.valueOf(count).concat(". ").concat(str.concat("\n"));
+                        count++;
                     }
                 }
             }
