@@ -25,7 +25,7 @@ public class MumuBot extends TelegramLongPollingBot {
     private static final Logger LOGGER = Logger.getLogger(MumuBot.class.getSimpleName());
 
     public void onUpdateReceived(Update update) {
-        String result;
+        String textForUser;
         Calendar calendar = Calendar.getInstance();
 
         Message message = update.getMessage();
@@ -34,12 +34,14 @@ public class MumuBot extends TelegramLongPollingBot {
             String currentDay = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(calendar.getTime());
             Date messageDate = new Date((long) message.getDate() * 1000);
             String messageDay = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(messageDate.getTime());
+            int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 
             LOGGER.info("FirstName: " + ReflectionObjectPrinter.toString(message.getFrom().getFirstName()));
             LOGGER.info("LastName: " + ReflectionObjectPrinter.toString(message.getFrom().getLastName()));
             LOGGER.info("UserName: " + ReflectionObjectPrinter.toString(message.getFrom().getUserName()));
             LOGGER.info("UserId: " + ReflectionObjectPrinter.toString(message.getFrom().getId()));
             LOGGER.info("CommandInput: " + message.getText());
+            LOGGER.info("Day Of Month: " + dayOfMonth);
 
             try {
                 if (message.getText().equals(Constants.HELP)) {
@@ -49,33 +51,33 @@ public class MumuBot extends TelegramLongPollingBot {
                     LOGGER.info("Response: " + Constants.START_TEXT);
                     sendMsg(message, Constants.START_TEXT);
                 } else if (message.getText().toLowerCase().equals(Constants.MONDAY)) {
-                    result = Connection.sendRequest(Constants.MONDAY);
-                    sendMsg(message, result);
+                    textForUser = Connection.sendRequest(dayOfMonth, Constants.MONDAY);
+                    sendMsg(message, textForUser);
 
                 } else if (message.getText().toLowerCase().equals(Constants.TUESDAY)) {
-                    result = Connection.sendRequest(Constants.TUESDAY);
-                    sendMsg(message, result);
+                    textForUser = Connection.sendRequest(dayOfMonth, Constants.TUESDAY);
+                    sendMsg(message, textForUser);
 
                 } else if (message.getText().toLowerCase().equals(Constants.WEDNESDAY)) {
-                    result = Connection.sendRequest(Constants.WEDNESDAY);
-                    sendMsg(message, result);
+                    textForUser = Connection.sendRequest(dayOfMonth, Constants.WEDNESDAY);
+                    sendMsg(message, textForUser);
 
                 } else if (message.getText().toLowerCase().equals(Constants.THURSDAY)) {
-                    result = Connection.sendRequest(Constants.THURSDAY);
-                    sendMsg(message, result);
+                    textForUser = Connection.sendRequest(dayOfMonth, Constants.THURSDAY);
+                    sendMsg(message, textForUser);
                 } else if (message.getText().toLowerCase().equals(Constants.FRIDAY)) {
-                    result = Connection.sendRequest(Constants.FRIDAY);
-                    sendMsg(message, result);
+                    textForUser = Connection.sendRequest(dayOfMonth, Constants.FRIDAY);
+                    sendMsg(message, textForUser);
 
                 } else if (message.getText().toLowerCase().equals(Constants.VICTORIA)) {
-                    result = Connection.sendRequest(Constants.VICTORIA);
-                    sendMsg(message, result);
+                    textForUser = Connection.sendRequest(Constants.VICTORIA);
+                    sendMsg(message, textForUser);
                 } else if (message.getText().toLowerCase().equals(Constants.ADDRESSES)) {
-                    result = Connection.sendRequest(Constants.ADDRESSES);
-                    sendMsg(message, result);
+                    textForUser = Connection.sendRequest(Constants.ADDRESSES);
+                    sendMsg(message, textForUser);
                 } else if (message.getText().toLowerCase().equals(Constants.TODAY)) {
-                    result = Connection.checkDay(currentDay, messageDay);
-                    sendMsg(message, result);
+                    textForUser = Connection.checkDay(currentDay, messageDay, dayOfMonth);
+                    sendMsg(message, textForUser);
                 } else {
                     LOGGER.info("Response: " + Constants.ERROR_OTHER_INPUT);
                     sendMsg(message, Constants.ERROR_OTHER_INPUT);
@@ -106,5 +108,4 @@ public class MumuBot extends TelegramLongPollingBot {
     public String getBotToken() {
         return "bottoken";
     }
-
 }

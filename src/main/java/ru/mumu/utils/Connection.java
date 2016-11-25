@@ -22,7 +22,7 @@ public class Connection {
 
     private static final Logger LOGGER = Logger.getLogger(Connection.class.getSimpleName());
 
-    public static String checkDay(String currentDay, String messageDay) throws IOException {
+    public static String checkDay(String currentDay, String messageDay, int dayOfMonth) throws IOException {
         LOGGER.info("currentDay:  " + currentDay);
         LOGGER.info("messageDay:  " + messageDay);
 
@@ -32,7 +32,7 @@ public class Connection {
             if (currentDay.equals(messageDay)) {
                 String weekDay = "/".concat(currentDay).toLowerCase();
                 LOGGER.info("WeekDay is : " + weekDay);
-                return sendRequest(weekDay);
+                return sendRequest(dayOfMonth, weekDay);
             } else {
                 return "Days are not equals!";
             }
@@ -40,35 +40,71 @@ public class Connection {
     }
 
     public static String sendRequest(String command) throws IOException {
+        String url[] = new String[2];
+        switch (command) {
+            case Constants.VICTORIA:
+                url[0] = Constants.VICTORIA_URL;
+                return getVictoriaLunch(url[0]);
+            case Constants.ADDRESSES:
+                url[0] = Constants.ADDRESSES_URL;
+                return getAddresses(url[0]);
+            default:
+                return "Bad command! ".concat(command);
+        }
+    }
 
+
+    private static String sendRequestLunchOneTwo(String command) throws IOException {
         String url[] = new String[2];
         switch (command) {
             case Constants.MONDAY:
-                url[0] = "http://cafemumu.ru/menu/item/133/";
-                url[1] = "http://cafemumu.ru/menu/item/134/";
+                url[0] = Constants.MONDAY_1_URL;
+                url[1] = Constants.MONDAY_2_URL;
                 return getMumuLunch(url);
             case Constants.TUESDAY:
-                url[0] = "http://cafemumu.ru/menu/item/135/";
-                url[1] = "http://cafemumu.ru/menu/item/136/";
+                url[0] = Constants.TUESDAY_1_URL;
+                url[1] = Constants.TUESDAY_2_URL;
                 return getMumuLunch(url);
             case Constants.WEDNESDAY:
-                url[0] = "http://cafemumu.ru/menu/item/137/";
-                url[1] = "http://cafemumu.ru/menu/item/138/";
+                url[0] = Constants.WEDNESDAY_1_URL;
+                url[1] = Constants.WEDNESDAY_2_URL;
                 return getMumuLunch(url);
             case Constants.THURSDAY:
-                url[0] = "http://cafemumu.ru/menu/item/139/";
-                url[1] = "http://cafemumu.ru/menu/item/140/";
+                url[0] = Constants.THURSDAY_1_URL;
+                url[1] = Constants.THURSDAY_2_URL;
                 return getMumuLunch(url);
             case Constants.FRIDAY:
-                url[0] = "http://cafemumu.ru/menu/item/141/";
-                url[1] = "http://cafemumu.ru/menu/item/142/";
+                url[0] = Constants.FRIDAY_1_URL;
+                url[1] = Constants.FRIDAY_2_URL;
                 return getMumuLunch(url);
-            case Constants.VICTORIA:
-                url[0] = "http://restaurantgrandvictoria.ru/lunch";
-                return getVictoriaLunch(url[0]);
-            case Constants.ADDRESSES:
-                url[0] = "http://zoon.ru/msk/restaurants/network/mu-mu/";
-                return getAddresses(url[0]);
+            default:
+                return "Bad command! ".concat(command);
+        }
+    }
+
+    private static String sendRequestLunchThreeFour(String command) throws IOException {
+        String url[] = new String[2];
+        switch (command) {
+            case Constants.MONDAY:
+                url[0] = Constants.MONDAY_3_URL;
+                url[1] = Constants.MONDAY_4_URL;
+                return getMumuLunch(url);
+            case Constants.TUESDAY:
+                url[0] = Constants.TUESDAY_3_URL;
+                url[1] = Constants.TUESDAY_4_URL;
+                return getMumuLunch(url);
+            case Constants.WEDNESDAY:
+                url[0] = Constants.WEDNESDAY_3_URL;
+                url[1] = Constants.WEDNESDAY_4_URL;
+                return getMumuLunch(url);
+            case Constants.THURSDAY:
+                url[0] = Constants.THURSDAY_3_URL;
+                url[1] = Constants.THURSDAY_4_URL;
+                return getMumuLunch(url);
+            case Constants.FRIDAY:
+                url[0] = Constants.FRIDAY_3_URL;
+                url[1] = Constants.FRIDAY_4_URL;
+                return getMumuLunch(url);
             default:
                 return "Bad command! ".concat(command);
         }
@@ -198,5 +234,48 @@ public class Connection {
         Pattern p = Pattern.compile("горошек|кукуруза\\)");
         Matcher m = p.matcher(str);
         return m.matches();
+    }
+
+    public static String sendRequest(int currentDayOfMonth, String command) {
+        LOGGER.info("Checking Day Of Month...");
+        try {
+            Document doc = Jsoup.connect(Constants.MUMU_MAIN_PAGE_URL).get();
+            Elements elements = doc.select("a");
+
+            boolean flag = false;
+            for (Element item : elements) {
+                if (item.attr("href").equals("/menu/group/2/")) {
+                    String[] arrStr = item.select("span").first().text().split("\n");
+                    LOGGER.info("Group info: " + arrStr[0]);
+                    flag = checkDayOfMonth(arrStr[0].trim().replace(" ", ""), currentDayOfMonth);
+                    break;
+                }
+            }
+            if (flag) {
+                return sendRequestLunchOneTwo(command);
+            } else {
+                return sendRequestLunchThreeFour(command);
+            }
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage());
+            return "Что-то пошло не так: ".concat(e.getMessage());
+        }
+    }
+
+    private static boolean checkDayOfMonth(String str, int currentDayOfMonth) {
+        String[] arrString = str.split("");
+        String StartDate = arrString[6] + arrString[7];
+        String EndDate = arrString[13] + arrString[14];
+        LOGGER.info("StartDate: " + StartDate);
+        LOGGER.info("EndDate: " + EndDate);
+
+        if (currentDayOfMonth >= Integer.parseInt(StartDate) && currentDayOfMonth <= Integer.parseInt(EndDate)
+                || currentDayOfMonth - 2 == Integer.parseInt(EndDate) || currentDayOfMonth - 1 == Integer.parseInt(EndDate)) {
+            LOGGER.info("Get lunch #1 and #2....");
+            return true;
+        } else {
+            LOGGER.info("Get lunch #3 and #4....");
+            return false;
+        }
     }
 }
