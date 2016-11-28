@@ -45,10 +45,10 @@ public class MumuBot extends TelegramLongPollingBot {
 
             try {
                 if (message.getText().equals(Constants.HELP)) {
-                    LOGGER.info("Response: " + Constants.HELP_TEXT);
+                    LOGGER.info("TextForUser: " + Constants.HELP_TEXT);
                     sendMsg(message, Constants.HELP_TEXT);
                 } else if (message.getText().equals(Constants.START)) {
-                    LOGGER.info("Response: " + Constants.START_TEXT);
+                    LOGGER.info("TextForUser: " + Constants.START_TEXT);
                     sendMsg(message, Constants.START_TEXT);
                 } else if (message.getText().toLowerCase().equals(Constants.MONDAY)) {
                     textForUser = Connection.sendRequest(dayOfMonth, Constants.MONDAY);
@@ -79,11 +79,11 @@ public class MumuBot extends TelegramLongPollingBot {
                     textForUser = Connection.checkDay(currentDay, messageDay, dayOfMonth);
                     sendMsg(message, textForUser);
                 } else {
-                    LOGGER.info("Response: " + Constants.ERROR_OTHER_INPUT);
+                    LOGGER.info("TextForUser: " + Constants.ERROR_OTHER_INPUT);
                     sendMsg(message, Constants.ERROR_OTHER_INPUT);
                 }
             } catch (IOException e) {
-                LOGGER.error(e.getMessage());
+                LOGGER.error(Constants.UNEXPECTED_ERROR.concat(e.getMessage()));
             }
         }
     }
@@ -97,7 +97,7 @@ public class MumuBot extends TelegramLongPollingBot {
         try {
             sendMessage(sendMessage);
         } catch (TelegramApiException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error(Constants.UNEXPECTED_ERROR.concat(e.getMessage()));
         }
     }
 

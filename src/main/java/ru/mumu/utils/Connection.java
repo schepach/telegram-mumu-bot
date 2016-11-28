@@ -54,63 +54,64 @@ public class Connection {
     }
 
 
-    private static String sendRequestLunchOneTwo(String command) throws IOException {
+    private static String sendRequestLunchOneTwo(String command, String dateInfo) throws IOException {
         String url[] = new String[2];
         switch (command) {
             case Constants.MONDAY:
                 url[0] = Constants.MONDAY_1_URL;
                 url[1] = Constants.MONDAY_2_URL;
-                return getMumuLunch(url);
+                return getMumuLunch(url, dateInfo);
             case Constants.TUESDAY:
                 url[0] = Constants.TUESDAY_1_URL;
                 url[1] = Constants.TUESDAY_2_URL;
-                return getMumuLunch(url);
+                return getMumuLunch(url, dateInfo);
             case Constants.WEDNESDAY:
                 url[0] = Constants.WEDNESDAY_1_URL;
                 url[1] = Constants.WEDNESDAY_2_URL;
-                return getMumuLunch(url);
+                return getMumuLunch(url, dateInfo);
             case Constants.THURSDAY:
                 url[0] = Constants.THURSDAY_1_URL;
                 url[1] = Constants.THURSDAY_2_URL;
-                return getMumuLunch(url);
+                return getMumuLunch(url, dateInfo);
             case Constants.FRIDAY:
                 url[0] = Constants.FRIDAY_1_URL;
                 url[1] = Constants.FRIDAY_2_URL;
-                return getMumuLunch(url);
+                return getMumuLunch(url, dateInfo);
             default:
                 return "Bad command! ".concat(command);
         }
     }
 
-    private static String sendRequestLunchThreeFour(String command) throws IOException {
+    private static String sendRequestLunchThreeFour(String command, String dateInfo) throws IOException {
         String url[] = new String[2];
         switch (command) {
             case Constants.MONDAY:
                 url[0] = Constants.MONDAY_3_URL;
                 url[1] = Constants.MONDAY_4_URL;
-                return getMumuLunch(url);
+                return getMumuLunch(url, dateInfo);
             case Constants.TUESDAY:
                 url[0] = Constants.TUESDAY_3_URL;
                 url[1] = Constants.TUESDAY_4_URL;
-                return getMumuLunch(url);
+                return getMumuLunch(url, dateInfo);
             case Constants.WEDNESDAY:
                 url[0] = Constants.WEDNESDAY_3_URL;
                 url[1] = Constants.WEDNESDAY_4_URL;
-                return getMumuLunch(url);
+                return getMumuLunch(url, dateInfo);
             case Constants.THURSDAY:
                 url[0] = Constants.THURSDAY_3_URL;
                 url[1] = Constants.THURSDAY_4_URL;
-                return getMumuLunch(url);
+                return getMumuLunch(url, dateInfo);
             case Constants.FRIDAY:
                 url[0] = Constants.FRIDAY_3_URL;
                 url[1] = Constants.FRIDAY_4_URL;
-                return getMumuLunch(url);
+                return getMumuLunch(url, dateInfo);
             default:
                 return "Bad command! ".concat(command);
         }
     }
 
-    private static String getMumuLunch(String[] url) throws IOException {
+    private static String getMumuLunch(String[] url, String dateInfo) throws IOException {
+        dateInfo = "☝\uD83C\uDFFB\uD83C\uDF74".concat(dateInfo).concat("\uD83D\uDC4C\uD83C\uDFFB\uD83C\uDF7D");
         String lunchItems = "";
         String price = "";
         String timeLunch = "Время обедов в МУ-МУ: 12:00-16:00";
@@ -131,7 +132,7 @@ public class Connection {
                     if (element.attr("class").equals("caption")) {
                         String[] arrStr = element.select("span").first().text().split(",");
                         String item = "";
-                        int count = 0;
+                        int count = 1;
                         for (String s : arrStr) {
                             if (s.contains("(перец")) {
                                 s = s.replaceAll("\\(перец", "");
@@ -151,17 +152,17 @@ public class Connection {
 
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
-            return "Что-то пошло не так: ".concat(e.getMessage());
+            return Constants.UNEXPECTED_ERROR.concat(e.getMessage());
         }
 
-        return timeLunch.concat("\n").concat(price.concat("\n").concat(lunchItems));
+        return timeLunch.concat("\n").concat(price.concat(dateInfo.toUpperCase().concat("\n")).concat("\n").concat(lunchItems));
     }
 
 
     private static String getVictoriaLunch(String url) throws IOException {
         String lunchItems = "";
         String date = "";
-
+        String info = "☝\uD83C\uDFFB\uD83C\uDF74".concat("Бизнес ланч на ");
         try {
             getResponseCode(url);
 
@@ -175,7 +176,7 @@ public class Connection {
                     String[] arrStr = item.text().split("\n");
 
                     for (String str : arrStr) {
-                        date += str.concat(".");
+                        date += str;
                     }
                 }
                 if (item.attr("class").equals("mdish") || item.attr("class").equals("mtext")) {
@@ -187,14 +188,14 @@ public class Connection {
                     }
                 }
             }
-            LOGGER.info("date: " + date);
+            LOGGER.info("Date: " + date);
             LOGGER.info("LUNCH_VICTORIA: \n" + lunchItems);
 
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
-            return "Что-то пошло не так: ".concat(e.getMessage());
+            return Constants.UNEXPECTED_ERROR.concat(e.getMessage());
         }
-        return date.concat("\n").concat(lunchItems);
+        return info.concat(date.concat("\uD83D\uDC4C\uD83C\uDFFB\uD83C\uDF7D").concat("\n").concat(lunchItems));
     }
 
     private static String getAddresses(String url) throws IOException {
@@ -217,7 +218,7 @@ public class Connection {
 
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
-            return "Что-то пошло не так: ".concat(e.getMessage());
+            return Constants.UNEXPECTED_ERROR.concat(e.getMessage());
         }
         return "Адреса кафе му-му: \n".concat(addresses);
     }
@@ -243,34 +244,42 @@ public class Connection {
             Elements elements = doc.select("a");
 
             boolean flag = false;
+            String dateInfo = "";
             for (Element item : elements) {
+
                 if (item.attr("href").equals("/menu/group/2/")) {
                     String[] arrStr = item.select("span").first().text().split("\n");
-                    LOGGER.info("Group info: " + arrStr[0]);
                     flag = checkDayOfMonth(arrStr[0].trim().replace(" ", ""), currentDayOfMonth);
+                    dateInfo = arrStr[0];
+                    if (!flag) {
+                        arrStr = item.nextElementSibling().text().split("\n");
+                        flag = checkDayOfMonth(arrStr[0].trim().replace(" ", ""), currentDayOfMonth);
+                        dateInfo = arrStr[0];
+                    }
                     break;
                 }
             }
+            LOGGER.info("DateInfo = " + dateInfo);
             if (flag) {
-                return sendRequestLunchOneTwo(command);
+                return sendRequestLunchOneTwo(command, dateInfo);
             } else {
-                return sendRequestLunchThreeFour(command);
+                return sendRequestLunchThreeFour(command, dateInfo);
             }
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
-            return "Что-то пошло не так: ".concat(e.getMessage());
+            return Constants.UNEXPECTED_ERROR.concat(e.getMessage());
         }
     }
 
-    private static boolean checkDayOfMonth(String str, int currentDayOfMonth) {
-        String[] arrString = str.split("");
+    private static boolean checkDayOfMonth(String dateInfo, int currentDayOfMonth) {
+        LOGGER.info("From method checkDayOfMonth: dateInfo = " + dateInfo);
+        String[] arrString = dateInfo.split("");
         String StartDate = arrString[6] + arrString[7];
         String EndDate = arrString[13] + arrString[14];
         LOGGER.info("StartDate: " + StartDate);
         LOGGER.info("EndDate: " + EndDate);
 
-        if (currentDayOfMonth >= Integer.parseInt(StartDate) && currentDayOfMonth <= Integer.parseInt(EndDate)
-                || currentDayOfMonth - 2 == Integer.parseInt(EndDate) || currentDayOfMonth - 1 == Integer.parseInt(EndDate)) {
+        if (currentDayOfMonth >= Integer.parseInt(StartDate) && currentDayOfMonth <= Integer.parseInt(EndDate)) {
             LOGGER.info("Get lunch #1 and #2....");
             return true;
         } else {

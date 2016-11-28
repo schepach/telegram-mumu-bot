@@ -29,6 +29,7 @@ public class Constants {
     public static final String ADDRESSES = "/addresses";
     public static final String ERROR_OTHER_INPUT = "Bad Command! Need enter workday. /help - помощь";
     public static final String ERROR_HOLIDAY_DAY = "Today is holiday! Need enter workday. /help - помощь";
+    public static final String UNEXPECTED_ERROR = "Что-то пошло не так: ";
 
     public static final String MONDAY_1_URL = "http://cafemumu.ru/menu/item/133/";
     public static final String MONDAY_2_URL = "http://cafemumu.ru/menu/item/134/";
