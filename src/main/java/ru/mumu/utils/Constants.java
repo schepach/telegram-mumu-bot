@@ -12,11 +12,12 @@ public class Constants {
                     "/wednesday\n" +
                     "/thursday\n" +
                     "/friday\n" +
+                    "/addresses\n" +
                     "/victoria\n" +
                     "/help\n" +
                     "/today\n" +
                     "Command '/victoria' for lunch in Grand Victoria cafe :)";
-    public static final String START_TEXT = "If you want eat - enter command. /help - помощь";
+    public static final String START_TEXT = "if you want eat - enter command. \n If I can help you - enter /help";
     public static final String HELP = "/help";
     public static final String START = "/start";
     public static final String TODAY = "/today";
@@ -26,10 +27,15 @@ public class Constants {
     public static final String THURSDAY = "/thursday";
     public static final String FRIDAY = "/friday";
     public static final String VICTORIA = "/victoria";
+    public static final String BAD_COMMAND = "Bad command! ";
+    public static final String TIME_LUNCH_MUMU = "Время обедов в МУ-МУ: 12:00-16:00";
+    public static final String CAFE_MUMU_TEXT = "in mumu cafe for you: \n\n";
+    public static final String VICTORIA_TEXT = "in Grand Vicrtoria cafe for you: \n\n";
     public static final String ADDRESSES = "/addresses";
-    public static final String ERROR_OTHER_INPUT = "Bad Command! Need enter workday. /help - помощь";
-    public static final String ERROR_HOLIDAY_DAY = "Today is holiday! Need enter workday. /help - помощь";
-    public static final String UNEXPECTED_ERROR = "Что-то пошло не так: ";
+    public static final String ADDRESSES_TEXT = "сafe Mumu address: \n";
+    public static final String ERROR_OTHER_INPUT = "bad command! \n If I can help you - enter /help";
+    public static final String ERROR_HOLIDAY_DAY = "today is holiday! The menu will be from Monday to Friday.";
+    public static final String UNEXPECTED_ERROR = "unexpected error: ";
 
     public static final String MONDAY_1_URL = "http://cafemumu.ru/menu/item/133/";
     public static final String MONDAY_2_URL = "http://cafemumu.ru/menu/item/134/";

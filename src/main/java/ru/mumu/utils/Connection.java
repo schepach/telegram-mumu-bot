@@ -11,6 +11,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,7 +26,8 @@ public class Connection {
 
     private static final Logger LOGGER = Logger.getLogger(Connection.class.getSimpleName());
 
-    public static String checkDay(String currentDay, String messageDay, int dayOfMonth) throws IOException {
+
+    public static String checkDay(String currentDay, String messageDay, Date dateCurrent) throws IOException {
         LOGGER.info("currentDay:  " + currentDay);
         LOGGER.info("messageDay:  " + messageDay);
 
@@ -32,7 +37,7 @@ public class Connection {
             if (currentDay.equals(messageDay)) {
                 String weekDay = "/".concat(currentDay).toLowerCase();
                 LOGGER.info("WeekDay is : " + weekDay);
-                return sendRequest(dayOfMonth, weekDay);
+                return sendRequest(dateCurrent, weekDay);
             } else {
                 return "Days are not equals!";
             }
@@ -49,7 +54,7 @@ public class Connection {
                 url[0] = Constants.ADDRESSES_URL;
                 return getAddresses(url[0]);
             default:
-                return "Bad command! ".concat(command);
+                return Constants.BAD_COMMAND.concat(command);
         }
     }
 
@@ -78,7 +83,7 @@ public class Connection {
                 url[1] = Constants.FRIDAY_2_URL;
                 return getMumuLunch(url, dateInfo);
             default:
-                return "Bad command! ".concat(command);
+                return Constants.BAD_COMMAND.concat(command);
         }
     }
 
@@ -106,7 +111,7 @@ public class Connection {
                 url[1] = Constants.FRIDAY_4_URL;
                 return getMumuLunch(url, dateInfo);
             default:
-                return "Bad command! ".concat(command);
+                return Constants.BAD_COMMAND.concat(command);
         }
     }
 
@@ -114,7 +119,7 @@ public class Connection {
         dateInfo = "☝\uD83C\uDFFB\uD83C\uDF74".concat(dateInfo).concat("\uD83D\uDC4C\uD83C\uDFFB\uD83C\uDF7D");
         String lunchItems = "";
         String price = "";
-        String timeLunch = "Время обедов в МУ-МУ: 12:00-16:00";
+
         try {
             for (String strURL : url) {
                 getResponseCode(strURL);
@@ -151,11 +156,11 @@ public class Connection {
             LOGGER.info("\n" + lunchItems);
 
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error(e.getMessage() + e);
             return Constants.UNEXPECTED_ERROR.concat(e.getMessage());
         }
 
-        return timeLunch.concat("\n").concat(price.concat(dateInfo.toUpperCase().concat("\n")).concat("\n").concat(lunchItems));
+        return Constants.TIME_LUNCH_MUMU.concat("\n").concat(price.concat(dateInfo.toUpperCase().concat("\n")).concat("\n").concat(lunchItems));
     }
 
 
@@ -163,6 +168,7 @@ public class Connection {
         String lunchItems = "";
         String date = "";
         String info = "☝\uD83C\uDFFB\uD83C\uDF74".concat("Бизнес ланч на ");
+
         try {
             getResponseCode(url);
 
@@ -192,10 +198,10 @@ public class Connection {
             LOGGER.info("LUNCH_VICTORIA: \n" + lunchItems);
 
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error(e.getMessage() + e);
             return Constants.UNEXPECTED_ERROR.concat(e.getMessage());
         }
-        return info.concat(date.concat("\uD83D\uDC4C\uD83C\uDFFB\uD83C\uDF7D").concat("\n").concat(lunchItems));
+        return Constants.VICTORIA_TEXT.concat(info.concat(date.concat("\uD83D\uDC4C\uD83C\uDFFB\uD83C\uDF7D").concat("\n").concat(lunchItems)));
     }
 
     private static String getAddresses(String url) throws IOException {
@@ -217,10 +223,10 @@ public class Connection {
             LOGGER.info("ADDRESSES: \n" + addresses);
 
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error(e.getMessage() + e);
             return Constants.UNEXPECTED_ERROR.concat(e.getMessage());
         }
-        return "Адреса кафе му-му: \n".concat(addresses);
+        return Constants.ADDRESSES_TEXT.concat(addresses);
     }
 
     private static void getResponseCode(String url) throws IOException {
@@ -237,54 +243,82 @@ public class Connection {
         return m.matches();
     }
 
-    public static String sendRequest(int currentDayOfMonth, String command) {
-        LOGGER.info("Checking Day Of Month...");
+    public static String sendRequest(Date dateCurrent, String command) {
+
         try {
             Document doc = Jsoup.connect(Constants.MUMU_MAIN_PAGE_URL).get();
             Elements elements = doc.select("a");
 
-            boolean flag = false;
-            String dateInfo = "";
+            boolean flag12 = false;
+            boolean flag34 = false;
+            String dateInfo12 = "";
+            String dateInfo34 = "";
+            String groupInfo;
+
             for (Element item : elements) {
 
+                if (!item.attr("href").equals("/menu/group/2/") && !item.attr("href").equals("/menu/group/48/")) {
+                    continue;
+                }
+
                 if (item.attr("href").equals("/menu/group/2/")) {
-                    String[] arrStr = item.select("span").first().text().split("\n");
-                    flag = checkDayOfMonth(arrStr[0].trim().replace(" ", ""), currentDayOfMonth);
-                    dateInfo = arrStr[0];
-                    if (!flag) {
-                        arrStr = item.nextElementSibling().text().split("\n");
-                        flag = checkDayOfMonth(arrStr[0].trim().replace(" ", ""), currentDayOfMonth);
-                        dateInfo = arrStr[0];
-                    }
-                    break;
+                    if (!dateInfo12.isEmpty()) continue;
+
+                    groupInfo = item.getElementsByAttributeValue("href", "/menu/group/2/").first().text();
+                    flag12 = checkDayOfMonth(groupInfo.replace(" ", ""), dateCurrent);
+                    dateInfo12 = groupInfo;
+                } else if (item.attr("href").equals("/menu/group/48/")) {
+                    if (!dateInfo34.isEmpty()) continue;
+
+                    groupInfo = item.getElementsByAttributeValue("href", "/menu/group/48/").first().text();
+                    flag34 = checkDayOfMonth(groupInfo.replace(" ", ""), dateCurrent);
+                    dateInfo34 = groupInfo;
                 }
             }
-            LOGGER.info("DateInfo = " + dateInfo);
-            if (flag) {
-                return sendRequestLunchOneTwo(command, dateInfo);
-            } else {
-                return sendRequestLunchThreeFour(command, dateInfo);
+
+            if (flag12) {
+                LOGGER.info("DateInfo: " + dateInfo12);
+                LOGGER.info("Get lunches #1 and #2...");
+                return sendRequestLunchOneTwo(command, dateInfo12);
+            } else if (flag34) {
+                LOGGER.info("DateInfo: " + dateInfo34);
+                LOGGER.info("Get lunches #3 and #4...");
+                return sendRequestLunchThreeFour(command, dateInfo34);
             }
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error(e.getMessage() + e);
             return Constants.UNEXPECTED_ERROR.concat(e.getMessage());
         }
+        LOGGER.info("Today is Holiday!");
+
+        return Constants.ERROR_HOLIDAY_DAY;
     }
 
-    private static boolean checkDayOfMonth(String dateInfo, int currentDayOfMonth) {
-        LOGGER.info("From method checkDayOfMonth: dateInfo = " + dateInfo);
-        String[] arrString = dateInfo.split("");
-        String StartDate = arrString[6] + arrString[7];
-        String EndDate = arrString[13] + arrString[14];
-        LOGGER.info("StartDate: " + StartDate);
-        LOGGER.info("EndDate: " + EndDate);
+    private static boolean checkDayOfMonth(String groupInfo, Date dateCurrent) {
+        LOGGER.info("Check groupInfo = " + groupInfo);
 
-        if (currentDayOfMonth >= Integer.parseInt(StartDate) && currentDayOfMonth <= Integer.parseInt(EndDate)) {
-            LOGGER.info("Get lunch #1 and #2....");
-            return true;
-        } else {
-            LOGGER.info("Get lunch #3 and #4....");
-            return false;
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        String[] arrGroupInfo = groupInfo.split("");
+        String dateStart = arrGroupInfo[6] + arrGroupInfo[7] + "/" + arrGroupInfo[9] + arrGroupInfo[10] + "/" + currentYear;
+        String dateEnd = arrGroupInfo[13] + arrGroupInfo[14] + "/" + arrGroupInfo[16] + arrGroupInfo[17] + "/" + currentYear;
+
+        Date startDate = convertStringToDate(dateStart);
+        Date endDate = convertStringToDate(dateEnd);
+
+        return dateCurrent.after(startDate) && dateCurrent.before(endDate) || dateCurrent.equals(endDate);
+    }
+
+    private static Date convertStringToDate(String strDate) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = null;
+
+        try {
+            date = formatter.parse(strDate);
+            LOGGER.info("Date from converter: " + date);
+
+        } catch (ParseException e) {
+            LOGGER.error(e.getMessage() + e);
         }
+        return date;
     }
 }
