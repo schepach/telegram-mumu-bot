@@ -3,7 +3,7 @@
 ---About bot---
 =====================
 This is Telegram bot for cafe [mumu](http://cafemumu.ru). <br/>
-He shows list lunch in mumu cafe for you.
+It shows list lunch in mumu cafe for you.
 
 And bonus - He shows list lunch in [Grand Victoria cafe] (http://restaurantgrandvictoria.ru/) for you.
 
