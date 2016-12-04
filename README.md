@@ -31,9 +31,11 @@ Search him in Telegram: [@lunchmumubot](https://telegram.me/lunchmumubot)
 
 ---Screenshots---
 =====================
+![StartWindow](https://photos-4.dropbox.com/t/2/AAByf2svEzfDUbkLHhZRhUMFJByjNrGtIhi0FLhL2AZVnw/12/141806364/png/32x32/3/1480881600/0/2/StartWindow.png/EPT7y2wYroUKIAIoAg/8y_C_GQ7eGUr9qHpj8f2IW7UZDNjZlOjHzqBN-ZPl-Q?size_mode=3&dl=0&size=1600x1200) <br/>
 
-![Start](https://www.dropbox.com/s/hney2y7z4jxsrnf/StartWindow.jpg?dl=0) <br/>
-![CommandsStartHelp](https://www.dropbox.com/s/eqznw1x2u15fo9x/start%3Ahelp.png?dl=0) <br/>
-![CommandWednesday](https://www.dropbox.com/s/ey63ifmduyweka7/wednesday.png?dl=0) <br/>
-![CommandVicroria](https://www.dropbox.com/s/ic9e1a4uzkige53/victoria.png?dl=0) <br/>
+![CommandsStartHelp](https://photos-6.dropbox.com/t/2/AABjZwVKit5cgsNhao7HTwhJ7O1QmvFCeaQfv-lpvRvpNw/12/141806364/png/32x32/3/1480881600/0/2/start%3Ahelp.png/EPT7y2wYsIUKIAIoAg/FnPB-XedInte6MUcT7nT1R7fsqre6-lY1FuZ_-5C6_I?size_mode=3&dl=0&size=1600x1200) <br/>
+
+![CommandWednesday](https://photos-5.dropbox.com/t/2/AAALkRKXwVGVZswX6AMgHCeTkR4jHGJ89trjhDf93C_Utw/12/141806364/png/32x32/3/1480881600/0/2/wednesday.png/EPT7y2wYroUKIAIoAg/7pyVFPl7CU-aJY8NrBaABNYNWmsJyfTDedi_7iiZ7aU?size_mode=3&dl=0&size=1600x1200) <br/>
+
+![CommandVicroria](https://photos-1.dropbox.com/t/2/AACnPgFNLToZB5IePy3aB8nZIWm5GTNe46KA3hDBcsVCtQ/12/141806364/png/32x32/3/1480881600/0/2/victoria.png/EPT7y2wYroUKIAIoAg/ZpJNrhch4HH-_kepvEIjicAdLWOKbYEukeVypEmoagM?size_mode=3&dl=0&size=1600x1200) <br/>
 
