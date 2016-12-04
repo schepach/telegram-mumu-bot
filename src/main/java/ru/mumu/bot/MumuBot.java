@@ -7,11 +7,9 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import ru.mumu.utils.Connection;
-import ru.mumu.utils.Constants;
-import ru.mumu.utils.reflection.ReflectionObjectPrinter;
+import ru.mumu.constants.Constants;
+import ru.mumu.utils.helper.BotHelper;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,77 +23,42 @@ public class MumuBot extends TelegramLongPollingBot {
     private static final Logger LOGGER = Logger.getLogger(MumuBot.class.getSimpleName());
 
     public void onUpdateReceived(Update update) {
-        String result;
-        Calendar calendar = Calendar.getInstance();
 
+        String textForUser;
+        Calendar calendar = Calendar.getInstance();
         Message message = update.getMessage();
+
         if (message != null && message.hasText()) {
 
             String currentDay = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(calendar.getTime());
             Date messageDate = new Date((long) message.getDate() * 1000);
             String messageDay = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(messageDate.getTime());
+            calendar.add(Calendar.DAY_OF_MONTH, 0);
+            Date currentDate = calendar.getTime();
 
-            LOGGER.info("FirstName: " + ReflectionObjectPrinter.toString(message.getFrom().getFirstName()));
-            LOGGER.info("LastName: " + ReflectionObjectPrinter.toString(message.getFrom().getLastName()));
-            LOGGER.info("UserName: " + ReflectionObjectPrinter.toString(message.getFrom().getUserName()));
-            LOGGER.info("UserId: " + ReflectionObjectPrinter.toString(message.getFrom().getId()));
+            LOGGER.info("FirstName: " + message.getFrom().getFirstName());
+            LOGGER.info("LastName: " + message.getFrom().getLastName());
+            LOGGER.info("UserName: " + message.getFrom().getUserName());
+            LOGGER.info("UserId: " + message.getFrom().getId());
             LOGGER.info("CommandInput: " + message.getText());
+            LOGGER.info("Current Date: " + currentDate);
 
-            try {
-                if (message.getText().equals(Constants.HELP)) {
-                    LOGGER.info("Response: " + Constants.HELP_TEXT);
-                    sendMsg(message, Constants.HELP_TEXT);
-                } else if (message.getText().equals(Constants.START)) {
-                    LOGGER.info("Response: " + Constants.START_TEXT);
-                    sendMsg(message, Constants.START_TEXT);
-                } else if (message.getText().toLowerCase().equals(Constants.MONDAY)) {
-                    result = Connection.sendRequest(Constants.MONDAY);
-                    sendMsg(message, result);
+            textForUser = BotHelper.checkMessage(message.getText(), currentDate, messageDay, currentDay);
+            sendMsg(message, textForUser);
 
-                } else if (message.getText().toLowerCase().equals(Constants.TUESDAY)) {
-                    result = Connection.sendRequest(Constants.TUESDAY);
-                    sendMsg(message, result);
-
-                } else if (message.getText().toLowerCase().equals(Constants.WEDNESDAY)) {
-                    result = Connection.sendRequest(Constants.WEDNESDAY);
-                    sendMsg(message, result);
-
-                } else if (message.getText().toLowerCase().equals(Constants.THURSDAY)) {
-                    result = Connection.sendRequest(Constants.THURSDAY);
-                    sendMsg(message, result);
-                } else if (message.getText().toLowerCase().equals(Constants.FRIDAY)) {
-                    result = Connection.sendRequest(Constants.FRIDAY);
-                    sendMsg(message, result);
-
-                } else if (message.getText().toLowerCase().equals(Constants.VICTORIA)) {
-                    result = Connection.sendRequest(Constants.VICTORIA);
-                    sendMsg(message, result);
-                } else if (message.getText().toLowerCase().equals(Constants.ADDRESSES)) {
-                    result = Connection.sendRequest(Constants.ADDRESSES);
-                    sendMsg(message, result);
-                } else if (message.getText().toLowerCase().equals(Constants.TODAY)) {
-                    result = Connection.checkDay(currentDay, messageDay);
-                    sendMsg(message, result);
-                } else {
-                    LOGGER.info("Response: " + Constants.ERROR_OTHER_INPUT);
-                    sendMsg(message, Constants.ERROR_OTHER_INPUT);
-                }
-            } catch (IOException e) {
-                LOGGER.error(e.getMessage());
-            }
         }
     }
 
     private void sendMsg(Message message, String text) {
         SendMessage sendMessage = new SendMessage();
+        sendMessage.setText(BotHelper.getTextForUser(message, text));
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(message.getChatId().toString());
         sendMessage.setReplayToMessageId(message.getMessageId());
-        sendMessage.setText(text);
         try {
             sendMessage(sendMessage);
         } catch (TelegramApiException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error(Constants.UNEXPECTED_ERROR.concat(e.getMessage()) + e);
         }
     }
 
@@ -106,5 +69,4 @@ public class MumuBot extends TelegramLongPollingBot {
     public String getBotToken() {
         return "bottoken";
     }
-
 }
