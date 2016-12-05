@@ -5,7 +5,7 @@
 This is Telegram bot for cafe [mumu](http://cafemumu.ru). <br/>
 It shows list lunch in mumu cafe for you.
 
-And bonus - He shows list lunch in [Grand Victoria cafe] (http://restaurantgrandvictoria.ru/) for you.
+And bonus - It shows list lunch in [Grand Victoria cafe] (http://restaurantgrandvictoria.ru/) for you.
 
 Search him in Telegram: [@lunchmumubot](https://telegram.me/lunchmumubot)
 
@@ -15,7 +15,7 @@ Search him in Telegram: [@lunchmumubot](https://telegram.me/lunchmumubot)
 **If you want run from IDE:**
 
 1. Download or clone [repository](https://github.com/schepach/TelegramMumuBot.git)
-2. Set your botname and token
+2. Set your botname and token in `MumuBot.java`
 3. Change path for log file `log4j.properties`
 4. Run `Main.java`
 5. Enjoy!
@@ -23,7 +23,7 @@ Search him in Telegram: [@lunchmumubot](https://telegram.me/lunchmumubot)
 **If you want run from console:**
 
 1. Download or clone [repository](https://github.com/schepach/TelegramMumuBot.git)
-2. Set your botname and token
+2. Set your botname and token in `MumuBot.java`
 3. Change path for log file `log4j.properties`
 4. Build with `maven`
 5. Go to `target` folder and enter `java -jar *name*.jar`
