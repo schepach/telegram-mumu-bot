@@ -26,6 +26,11 @@ public class MumuBot extends TelegramLongPollingBot {
 
         String textForUser;
         Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+
         Message message = update.getMessage();
 
         if (message != null && message.hasText()) {
@@ -45,7 +50,6 @@ public class MumuBot extends TelegramLongPollingBot {
 
             textForUser = BotHelper.checkMessage(message.getText(), currentDate, messageDay, currentDay);
             sendMsg(message, textForUser);
-
         }
     }
 

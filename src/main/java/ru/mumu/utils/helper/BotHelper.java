@@ -19,32 +19,34 @@ import java.util.regex.Pattern;
 public class BotHelper {
 
     private static final Logger LOGGER = Logger.getLogger(BotHelper.class.getSimpleName());
+    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("dd/MM/yyyy");
+    private static final Pattern PATTERN = Pattern.compile("горошек|кукуруза\\)");
 
-    public static String checkMessage(String message, Date currentDate, String messageDay, String currentDay) {
+    public static String checkMessage(String command, Date currentDate, String messageDay, String currentDay) {
 
         try {
 
-            switch (message) {
+            switch (command) {
                 case Constants.HELP:
                     LOGGER.info("TextForUser: " + Constants.HELP_TEXT);
                     return Constants.HELP_TEXT;
                 case Constants.START:
-                    LOGGER.info("TextForUser: " + Constants.START_TEXT);
+                    LOGGER.info("TextForUser: " + command);
                     return Constants.START_TEXT;
                 case Constants.MONDAY:
-                    return Connection.sendRequest(currentDate, Constants.MONDAY);
+                    return Connection.sendRequest(currentDate, command);
                 case Constants.TUESDAY:
-                    return Connection.sendRequest(currentDate, Constants.TUESDAY);
+                    return Connection.sendRequest(currentDate, command);
                 case Constants.WEDNESDAY:
-                    return Connection.sendRequest(currentDate, Constants.WEDNESDAY);
+                    return Connection.sendRequest(currentDate, command);
                 case Constants.THURSDAY:
-                    return Connection.sendRequest(currentDate, Constants.THURSDAY);
+                    return Connection.sendRequest(currentDate, command);
                 case Constants.FRIDAY:
-                    return Connection.sendRequest(currentDate, Constants.FRIDAY);
+                    return Connection.sendRequest(currentDate, command);
                 case Constants.VICTORIA:
-                    return Connection.sendRequest(Constants.VICTORIA);
+                    return Connection.sendRequest(command);
                 case Constants.ADDRESSES:
-                    return Connection.sendRequest(Constants.ADDRESSES);
+                    return Connection.sendRequest(command);
                 case Constants.TODAY:
                     return checkCommandToday(currentDay, messageDay, currentDate);
                 default:
@@ -100,20 +102,23 @@ public class BotHelper {
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         String[] arrGroupInfo = groupInfo.split("");
         String dateStart = arrGroupInfo[6] + arrGroupInfo[7] + "/" + arrGroupInfo[9] + arrGroupInfo[10] + "/" + currentYear;
-        String dateEnd = arrGroupInfo[13] + arrGroupInfo[14] + "/" + arrGroupInfo[16] + arrGroupInfo[17] + "/" + currentYear;
+        String dateEnd = arrGroupInfo[16] + arrGroupInfo[17] + "/" + arrGroupInfo[19] + arrGroupInfo[20] + "/" + currentYear;
 
         Date startDate = convertStringToDate(dateStart);
         Date endDate = convertStringToDate(dateEnd);
 
-        return dateCurrent.after(startDate) && dateCurrent.before(endDate) || dateCurrent.equals(endDate);
+        LOGGER.info("CurrentDate = " + dateCurrent);
+        LOGGER.info("StartDate  = " + startDate);
+        LOGGER.info("EndDate  = " + endDate);
+
+        return dateCurrent.after(startDate) && dateCurrent.before(endDate) || dateCurrent.toString().equals(endDate.toString());
     }
 
     private static Date convertStringToDate(String strDate) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Date date = null;
 
         try {
-            date = formatter.parse(strDate);
+            date = FORMATTER.parse(strDate);
             LOGGER.info("Date from converter: " + date);
 
         } catch (ParseException e) {
@@ -140,8 +145,7 @@ public class BotHelper {
     }
 
     public static boolean checkString(String str) {
-        Pattern p = Pattern.compile("горошек|кукуруза\\)");
-        Matcher m = p.matcher(str);
+        Matcher m = PATTERN.matcher(str);
         return m.matches();
     }
 }
