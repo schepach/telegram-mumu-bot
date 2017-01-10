@@ -61,17 +61,17 @@ public class Connection {
 
                 groupInfo = item.select("div").text();
                 flag = BotHelper.checkDayOfMonth(groupInfo.replace(" ", ""), dateCurrent);
-                lunchInfo.append("\n").append(groupInfo).append("\n");
                 LOGGER.info("FLAG = " + flag);
-
 
                 if (flag) {
                     url = item.attr("abs:href");
                     LOGGER.info("URL = " + url);
                     break;
                 }
-                LOGGER.info("LunchInfo = " + lunchInfo.toString());
             }
+
+            lunchInfo.append("\n").append(groupInfo).append("\n");
+            LOGGER.info("LunchInfo = " + lunchInfo.toString());
 
             if (flag) {
                 LOGGER.info("DateInfo: " + lunchInfo);
@@ -79,7 +79,7 @@ public class Connection {
                 return getListUrl(url, command, lunchInfo.toString());
             } else {
                 LOGGER.info("Today is Holiday!");
-                return "Блиэайшие: " + lunchInfo;
+                return "Ближайшие: " + lunchInfo;
             }
         } catch (IOException e) {
             LOGGER.error(e.getMessage() + e);
@@ -211,6 +211,7 @@ public class Connection {
                     date = item.text();
                     if (!date.isEmpty()) {
                         stringBuilder.append(date).append("\uD83C\uDF7D").append("\n");
+                        stringBuilder.append("\n");
                     }
                 }
                 if (item.attr("class").equals("mdish") || item.attr("class").equals("mtext")) {
