@@ -66,11 +66,12 @@ public class Connection {
                 if (flag) {
                     url = item.attr("abs:href");
                     LOGGER.info("URL = " + url);
+                    lunchInfo.append("\n").append(groupInfo).append("\n");
                     break;
                 }
+                lunchInfo.append("\n").append(groupInfo).append("\n");
             }
 
-            lunchInfo.append("\n").append(groupInfo).append("\n");
             LOGGER.info("LunchInfo = " + lunchInfo.toString());
 
             if (flag) {
