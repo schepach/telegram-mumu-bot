@@ -2,11 +2,11 @@ package ru.mumu.bot;
 
 
 import org.apache.log4j.Logger;
-import org.telegram.telegrambots.TelegramApiException;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.exceptions.TelegramApiException;
 import ru.mumu.constants.Constants;
 import ru.mumu.utils.helper.BotHelper;
 
@@ -22,10 +22,16 @@ public class MumuBot extends TelegramLongPollingBot {
 
     private static final Logger LOGGER = Logger.getLogger(MumuBot.class.getSimpleName());
 
+    @Override
     public void onUpdateReceived(Update update) {
 
         String textForUser;
         Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+
         Message message = update.getMessage();
 
         if (message != null && message.hasText()) {
@@ -45,7 +51,6 @@ public class MumuBot extends TelegramLongPollingBot {
 
             textForUser = BotHelper.checkMessage(message.getText(), currentDate, messageDay, currentDay);
             sendMsg(message, textForUser);
-
         }
     }
 
@@ -54,7 +59,7 @@ public class MumuBot extends TelegramLongPollingBot {
         sendMessage.setText(BotHelper.getTextForUser(message, text));
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(message.getChatId().toString());
-        sendMessage.setReplayToMessageId(message.getMessageId());
+        sendMessage.setReplyToMessageId(message.getMessageId());
         try {
             sendMessage(sendMessage);
         } catch (TelegramApiException e) {
@@ -62,10 +67,12 @@ public class MumuBot extends TelegramLongPollingBot {
         }
     }
 
+    @Override
     public String getBotUsername() {
         return "botname";
     }
 
+    @Override
     public String getBotToken() {
         return "bottoken";
     }
