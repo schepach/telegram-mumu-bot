@@ -161,7 +161,7 @@ public class Connection {
                     }
 
                     if (element.attr("class").equals("caption")) {
-                        String[] arrStr = element.select("p").first().text().split(",");
+                        String[] arrStr = element.select("span").first().text().split(",");
                         h1 = element.select("h1").first().text();
                         stringBuilder.append("\n").append(h1).append(": ").append("\n");
                         int count = 1;
