@@ -50,6 +50,7 @@ public class Connection {
 
             boolean flag = false;
             StringBuilder lunchInfo = new StringBuilder();
+            StringBuilder lunchInfoHoliday = new StringBuilder();
             String groupInfo = "";
             String url = "";
 
@@ -68,8 +69,9 @@ public class Connection {
                     LOGGER.info("URL = " + url);
                     lunchInfo.append("\n").append(groupInfo).append("\n");
                     break;
+                } else {
+                    lunchInfoHoliday.append("\n").append(groupInfo).append("\n");
                 }
-                lunchInfo.append("\n").append(groupInfo).append("\n");
             }
 
             LOGGER.info("LunchInfo = " + lunchInfo.toString());
@@ -80,7 +82,7 @@ public class Connection {
                 return getListUrl(url, command, lunchInfo.toString());
             } else {
                 LOGGER.info("Today is Holiday!");
-                return "Ближайшие: " + lunchInfo;
+                return "Ближайшие: " + lunchInfoHoliday.toString();
             }
         } catch (IOException e) {
             LOGGER.error(e.getMessage() + e);
@@ -159,7 +161,7 @@ public class Connection {
                     }
 
                     if (element.attr("class").equals("caption")) {
-                        String[] arrStr = element.select("p").first().text().split(",");
+                        String[] arrStr = element.select("span").first().text().split(",");
                         h1 = element.select("h1").first().text();
                         stringBuilder.append("\n").append(h1).append(": ").append("\n");
                         int count = 1;
