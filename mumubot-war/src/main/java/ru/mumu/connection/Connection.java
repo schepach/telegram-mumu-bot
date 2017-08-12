@@ -123,7 +123,7 @@ public class Connection {
             return getMumuLunch(listURLS, dateInfo);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage() + e);
         }
         return "";
     }

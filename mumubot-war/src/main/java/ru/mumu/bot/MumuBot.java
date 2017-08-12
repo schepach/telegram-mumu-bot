@@ -74,6 +74,6 @@ public class MumuBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotToken() {
-        return "bottoken";
+        return "token";
     }
 }

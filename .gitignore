@@ -1,8 +1,10 @@
-
-/target/
+*/target/
 .project
 .classpath
 .DS_Store
 .settings
 .idea
 *.iml
+*.ear
+*.war
+*.jar
