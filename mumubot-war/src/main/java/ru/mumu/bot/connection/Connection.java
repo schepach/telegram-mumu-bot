@@ -198,27 +198,47 @@ public class Connection {
 
     private static String getMumuAddresses(String url) {
 
-        String addresses = "";
+        StringBuilder stringBuilder = new StringBuilder();
 
         try {
             getResponseCode(url);
             Document doc = Jsoup.connect(url).get();
-            Elements elements = doc.select("address");
+            Elements elements = doc.select("div");
 
-            int count = 1;
-            for (Element item : elements) {
-                if (item.attr("class").equals("invisible-links")) {
-                    addresses += String.valueOf(count).concat(". ").concat(item.text().concat("\n"));
-                    count++;
+            for (Element elem : elements) {
+
+                if (elem.select("div").attr("id").equals("bp_data-39139909_120")) {
+
+                    String text = elem.select("div").attr("id", "bp_data-39139909_120")
+                            .attr("class", "bp_text").first().text();
+
+                    text = text.substring(text.indexOf("1)"), text.lastIndexOf("contacts") + 8).trim();
+                    String[] splitText = text.split("\\d\\d?\\)");
+
+                    int count = 1;
+
+                    for (String item : splitText) {
+
+                        if (item.isEmpty()) continue;
+
+                        if (count == 37) {
+                            String[] lastItem = item.split("\\. ");
+                            stringBuilder.append(String.valueOf(count).concat(".").concat(lastItem[0])).append("\n");
+                            stringBuilder.append(lastItem[1]);
+                            break;
+                        }
+                        stringBuilder.append(String.valueOf(count).concat(".").concat(item)).append("\n");
+                        count++;
+                    }
+                    break;
                 }
             }
-            LOGGER.info("ADDRESSES: \n" + addresses);
-
         } catch (Exception e) {
             LOGGER.error(e.getMessage() + e);
             return Constants.UNEXPECTED_ERROR;
         }
-        return Constants.ADDRESSES_TEXT.concat(addresses);
+
+        return Constants.ADDRESSES_TEXT.concat(stringBuilder.toString());
     }
 
     private static void getResponseCode(String url) throws IOException {

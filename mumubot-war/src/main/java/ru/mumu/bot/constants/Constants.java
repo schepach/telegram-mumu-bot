@@ -42,7 +42,7 @@ public class Constants {
     public static final String VICTORIA_TEXT = "in Grand Victoria cafe for you: \n\n";
 
     public static final String VICTORIA_URL = "http://restaurantgrandvictoria.ru/lunch";
-    public static final String ADDRESSES_URL = "http://zoon.ru/msk/restaurants/network/mu-mu/";
+    public static final String ADDRESSES_URL = "https://vk.com/topic-39139909_28681126";
     public static final String MUMU_MAIN_PAGE_URL = "http://cafemumu.ru/catalog/";
 
     public static final LocalTime START_TIME = LocalTime.of(0, 0, 0);
