@@ -15,7 +15,7 @@
             <module name="org.jboss.remote-naming" export="true"/>
             <module name="org.jboss.resteasy.resteasy-multipart-provider" export="true"/>
             <module name="org.jboss.resteasy.resteasy-jaxrs" export="true"/>
-            <module name="org.hornetq" export="true"/>
+            <!--<module name="org.hornetq" export="true"/>-->
             <module name="org.apache.log4j"/>
         </dependencies>
 

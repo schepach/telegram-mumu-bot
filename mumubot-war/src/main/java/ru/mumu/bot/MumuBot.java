@@ -7,8 +7,8 @@ import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
-import ru.mumu.constants.Constants;
-import ru.mumu.utils.helper.BotHelper;
+import ru.mumu.bot.constants.Constants;
+import ru.mumu.bot.utils.BotHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -49,7 +49,7 @@ public class MumuBot extends TelegramLongPollingBot {
             LOGGER.info("CommandInput: " + message.getText());
             LOGGER.info("Current Date: " + currentDate);
 
-            textForUser = BotHelper.checkMessage(message.getText(), currentDate, messageDay, currentDay);
+            textForUser = BotHelper.checkMessage(message.getText(), messageDay, currentDay);
             sendMsg(message, textForUser);
         }
     }

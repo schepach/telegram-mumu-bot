@@ -1,11 +1,10 @@
-package ru.mumu.utils.helper;
+package ru.mumu.bot.utils;
 
 import org.apache.log4j.Logger;
 import org.telegram.telegrambots.api.objects.Message;
-import ru.mumu.connection.Connection;
-import ru.mumu.constants.Constants;
+import ru.mumu.bot.connection.Connection;
+import ru.mumu.bot.constants.Constants;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -22,44 +21,36 @@ public class BotHelper {
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("dd/MM/yyyy");
     private static final Pattern PATTERN = Pattern.compile("горошек|кукуруза\\)");
 
-    public static String checkMessage(String command, Date currentDate, String messageDay, String currentDay) {
+    public static String checkMessage(String command, String messageDay, String currentDay) {
 
-        try {
-
-            switch (command) {
-                case Constants.HELP:
-                    LOGGER.info("TextForUser: " + Constants.HELP_TEXT);
-                    return Constants.HELP_TEXT;
-                case Constants.START:
-                    LOGGER.info("TextForUser: " + command);
-                    return Constants.START_TEXT;
-                case Constants.MONDAY:
-                    return Connection.sendRequest(currentDate, command);
-                case Constants.TUESDAY:
-                    return Connection.sendRequest(currentDate, command);
-                case Constants.WEDNESDAY:
-                    return Connection.sendRequest(currentDate, command);
-                case Constants.THURSDAY:
-                    return Connection.sendRequest(currentDate, command);
-                case Constants.FRIDAY:
-                    return Connection.sendRequest(currentDate, command);
-                case Constants.VICTORIA:
-                    return Connection.sendRequest(command);
-                case Constants.ADDRESSES:
-                    return Connection.sendRequest(command);
-                case Constants.TODAY:
-                    return checkCommandToday(currentDay, messageDay, currentDate);
-                default:
-                    LOGGER.info("TextForUser: " + Constants.ERROR_OTHER_INPUT);
-                    return Constants.ERROR_OTHER_INPUT;
-            }
-        } catch (IOException e) {
-            LOGGER.error(Constants.UNEXPECTED_ERROR.concat(e.getMessage()) + e);
+        switch (command) {
+            case Constants.HELP:
+                LOGGER.info("TextForUser: " + Constants.HELP_TEXT);
+                return Constants.HELP_TEXT;
+            case Constants.START:
+                LOGGER.info("TextForUser: " + command);
+                return Constants.START_TEXT;
+            case Constants.MONDAY:
+                return Connection.getListUrl(command);
+            case Constants.TUESDAY:
+                return Connection.getListUrl(command);
+            case Constants.WEDNESDAY:
+                return Connection.getListUrl(command);
+            case Constants.THURSDAY:
+                return Connection.getListUrl(command);
+            case Constants.FRIDAY:
+                return Connection.getListUrl(command);
+            case Constants.VICTORIA:
+                return Connection.sendRequest(command);
+            case Constants.ADDRESSES:
+                return Connection.sendRequest(command);
+            case Constants.TODAY:
+                return checkCommandToday(currentDay, messageDay);
+            default:
+                LOGGER.info("TextForUser: " + Constants.ERROR_OTHER_INPUT);
+                return Constants.ERROR_OTHER_INPUT;
         }
-
-        return Constants.BAD_COMMAND;
     }
-
 
     public static String getTextForUser(Message message, String text) {
 
@@ -111,7 +102,8 @@ public class BotHelper {
         LOGGER.info("StartDate  = " + startDate);
         LOGGER.info("EndDate  = " + endDate);
 
-        return dateCurrent.after(startDate) && dateCurrent.before(endDate) || dateCurrent.toString().equals(endDate.toString());
+        return dateCurrent.after(startDate) && dateCurrent.before(endDate) || dateCurrent.toString().equals(endDate.toString())
+                || dateCurrent.getTime() > endDate.getTime();
     }
 
     private static Date convertStringToDate(String strDate) {
@@ -127,7 +119,7 @@ public class BotHelper {
         return date;
     }
 
-    private static String checkCommandToday(String currentDay, String messageDay, Date dateCurrent) throws IOException {
+    private static String checkCommandToday(String currentDay, String messageDay) {
         LOGGER.info("currentDay:  " + currentDay);
         LOGGER.info("messageDay:  " + messageDay);
 
@@ -137,7 +129,7 @@ public class BotHelper {
             if (currentDay.equals(messageDay)) {
                 String weekDay = "/".concat(currentDay).toLowerCase();
                 LOGGER.info("WeekDay is : " + weekDay);
-                return Connection.sendRequest(dateCurrent, weekDay);
+                return Connection.getListUrl(weekDay);
             } else {
                 return "Days are not equals!";
             }
