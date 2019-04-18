@@ -2,9 +2,6 @@ package ru.mumu.bot.constants;
 
 import java.time.LocalTime;
 
-/**
- * Created by alexey on 15.08.16.
- */
 public class Constants {
 
     public static final String HELP = "/help";
@@ -36,7 +33,7 @@ public class Constants {
     public static final String ERROR_OTHER_INPUT = "bad command! \n If I can help you - enter /help";
     public static final String ERROR_HOLIDAY_DAY = "today is holiday! The menu will be from Monday to Friday.";
     public static final String UNEXPECTED_ERROR = "Что-то пошло не так, попробуйте повторить попытку позднее...";
-    public static final String ADDRESSES_TEXT = "сafe Mumu address: \n";
+    public static final String ADDRESSES_TEXT = "cafe Mumu address: \n";
     public static final String CAFE_MUMU_TEXT = "in Mumu cafe for you: \n\n";
     public static final String START_TEXT = "if you want eat - enter command. \n If I can help you - enter /help";
     public static final String VICTORIA_TEXT = "in Grand Victoria cafe for you: \n\n";

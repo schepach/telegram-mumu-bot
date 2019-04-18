@@ -2,11 +2,11 @@ package ru.mumu.bot;
 
 
 import org.apache.log4j.Logger;
-import org.telegram.telegrambots.api.methods.send.SendMessage;
-import org.telegram.telegrambots.api.objects.Message;
-import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.mumu.bot.constants.Constants;
 import ru.mumu.bot.utils.BotHelper;
 
@@ -15,17 +15,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * Created by alexey on 08.08.16.
- */
 public class MumuBot extends TelegramLongPollingBot {
 
-    private static final Logger LOGGER = Logger.getLogger(MumuBot.class.getSimpleName());
+    private final Logger LOGGER = Logger.getLogger(this.getClass().getSimpleName());
 
     @Override
     public void onUpdateReceived(Update update) {
 
-        String textForUser;
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR, 0);
         calendar.set(Calendar.MINUTE, 0);
@@ -49,8 +45,7 @@ public class MumuBot extends TelegramLongPollingBot {
             LOGGER.info("CommandInput: " + message.getText());
             LOGGER.info("Current Date: " + currentDate);
 
-            textForUser = BotHelper.checkMessage(message.getText(), messageDay, currentDay);
-            sendMsg(message, textForUser);
+            sendMsg(message, BotHelper.getLunchInfo(message.getText(), messageDay, currentDay));
         }
     }
 
@@ -61,9 +56,9 @@ public class MumuBot extends TelegramLongPollingBot {
         sendMessage.setChatId(message.getChatId().toString());
         sendMessage.setReplyToMessageId(message.getMessageId());
         try {
-            sendMessage(sendMessage);
-        } catch (TelegramApiException e) {
-            LOGGER.error(Constants.UNEXPECTED_ERROR.concat(e.getMessage()) + e);
+            execute(sendMessage);
+        } catch (TelegramApiException ex) {
+            LOGGER.error(Constants.UNEXPECTED_ERROR.concat(ex.getMessage()) + ex);
         }
     }
 

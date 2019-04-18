@@ -1,9 +1,11 @@
 package ru.mumu.bot.connection;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.ParseException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,17 +17,13 @@ import ru.mumu.bot.utils.BotHelper;
 import java.io.IOException;
 import java.util.*;
 
-/**
- * Created by alexey on 08.08.16.
- */
-
 public class Connection {
 
     private static final Logger LOGGER = Logger.getLogger(Connection.class.getSimpleName());
     public static Map<String, String> URL_MAP = new HashMap<>();
 
     public static String sendRequest(String command) {
-        String url[] = new String[2];
+        String[] url = new String[2];
         switch (command) {
             case Constants.VICTORIA:
                 url[0] = Constants.VICTORIA_URL;
@@ -40,7 +38,10 @@ public class Connection {
 
     public static String getListUrl(String command) {
 
-        if (URL_MAP == null || URL_MAP.isEmpty() || URL_MAP.get("done") == null || URL_MAP.get("done").isEmpty()) {
+        if (URL_MAP == null
+                || URL_MAP.isEmpty()
+                || URL_MAP.get("done") == null
+                || URL_MAP.get("done").isEmpty()) {
             System.out.println(Constants.CACHING_MESSAGE);
             return Constants.CACHING_MESSAGE;
         }
@@ -76,7 +77,7 @@ public class Connection {
             return getMumuLunch(listURLS, URL_MAP.get("lunchInfo"));
 
         } catch (Exception ex) {
-            LOGGER.error(ex.getMessage() + ex);
+            LOGGER.log(Level.ERROR, "Exception: ", ex);
         }
 
         return "";
@@ -85,7 +86,7 @@ public class Connection {
     private static String getMumuLunch(List<String> urls, String dateInfo) throws IOException {
 
         String price = "";
-        String h1;
+        String caption = "";
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(Constants.TIME_LUNCH).append("\n").append("\uD83C\uDF74".concat(dateInfo.trim()).concat("\uD83C\uDF7D").toUpperCase());
 
@@ -99,24 +100,30 @@ public class Connection {
 
                 for (Element element : elements) {
 
+                    // Get caption
+                    if (element.attr("class").equals("food-container")) {
+                        if (element.select("h1") != null
+                                && !element.select("h1").isEmpty()) {
+                            caption = element.select("h1").first().text();
+                            if (!caption.isEmpty()) {
+                                continue;
+                            }
+                        }
+                    }
+
+                    // Get Price
                     if (element.attr("class").equals("price")) {
+                        price = element.text().substring(0, 3);
                         if (!price.isEmpty()) {
                             continue;
                         }
-                        price = "Стоимость обеда: ".concat(elements.select("figcaption").first().text().substring(0, 3)).concat(" рублей\n");
                         stringBuilder.insert(0, price).append("\n");
                     }
 
-                    if (element.attr("class").equals("caption")) {
-
-                        if (element.select("span").get(2) == null) {
-                            LOGGER.error("element span get(2) is null");
-                            return Constants.UNEXPECTED_ERROR;
-                        }
-
-                        String[] arrStr = element.select("span").get(2).attr("class", true).text().split(",");
-                        h1 = element.select("h1").first().text();
-                        stringBuilder.append("\n").append(h1).append(": ").append("\n");
+                    // Get Menu Items
+                    if (element.attr("class").equals("info-item js-compositions")) {
+                        String[] arrStr = element.text().substring(0, element.text().indexOf("ассорти") + 12).split(",");
+                        stringBuilder.append("\n").append(caption).append(": ").append("\n");
                         int count = 1;
                         for (String s : arrStr) {
 
@@ -125,12 +132,6 @@ public class Connection {
                             if (s.contains("(горошек")) {
                                 s = s.replaceAll("\\(горошек", "");
                             }
-
-                            if (s.contains("ассортименте")) {
-                                stringBuilder.append(count).append(". ").append(s.substring(0, s.lastIndexOf(" ")).trim()).append("\n");
-                                break;
-                            }
-
                             if (s.contains("(перец")) {
                                 s = s.replaceAll("\\(перец", "");
                             }
@@ -146,7 +147,7 @@ public class Connection {
             }
             LOGGER.info("LUNCH_MUMU: \n" + stringBuilder.toString());
         } catch (Exception ex) {
-            LOGGER.error(ex.getMessage() + ex);
+            LOGGER.log(Level.ERROR, "Exception: ", ex);
             return Constants.UNEXPECTED_ERROR;
         }
 
@@ -190,7 +191,7 @@ public class Connection {
             LOGGER.info("LUNCH_VICTORIA: \n" + lunchItems);
 
         } catch (Exception ex) {
-            LOGGER.error(ex.getMessage() + ex);
+            LOGGER.log(Level.ERROR, "Exception: ", ex);
             return Constants.UNEXPECTED_ERROR;
         }
         return stringBuilder.toString();
@@ -233,8 +234,8 @@ public class Connection {
                     break;
                 }
             }
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage() + e);
+        } catch (Exception ex) {
+            LOGGER.log(Level.ERROR, "Exception: ", ex);
             return Constants.UNEXPECTED_ERROR;
         }
 
@@ -256,31 +257,40 @@ public class Connection {
             Document doc = Jsoup.connect(Constants.MUMU_MAIN_PAGE_URL).get();
             Elements elements = doc.select("a");
 
-            boolean flag = false;
-            String lunchInfo = "";
+            boolean isNotHoliday = false;
+            String lunchInfo = null;
             StringBuilder lunchInfoHoliday = new StringBuilder();
 
             for (Element elem : elements) {
 
-                if (!elem.attr("href").contains("lanchi")) {
+                if (!elem.attr("href").contains("/catalog/lanchi")) {
                     continue;
                 }
 
                 lunchInfo = elem.select("div").text();
-                flag = BotHelper.checkDayOfMonth(lunchInfo.replace(" ", ""), Calendar.getInstance().getTime());
-                LOGGER.info("FLAG = " + flag);
 
-                if (flag) {
+                if (lunchInfo == null || lunchInfo.isEmpty()) {
+                    LOGGER.log(Level.ERROR, "lunchInfo from cachingUrls method is null or is empty!");
+                    LOGGER.log(Level.ERROR, "Break caching pages ...");
+                    return Constants.UNEXPECTED_ERROR;
+                }
+
+                try {
+                    isNotHoliday = BotHelper.checkDayOfMonth(lunchInfo.replace(" ", ""), Calendar.getInstance().getTime());
+                    LOGGER.info("isNotHoliday = " + isNotHoliday);
+                } catch (ParseException ex) {
+                    return Constants.UNEXPECTED_ERROR;
+                }
+                if (isNotHoliday) {
                     url = elem.attr("abs:href");
-                    LOGGER.info("URL = " + url);
-                    System.out.println("URL = " + url);
+                    LOGGER.info("UrlWithLunches = " + url);
                     break;
                 } else {
                     lunchInfoHoliday.append("\n").append(lunchInfo).append("\n");
                 }
             }
 
-            if (!flag) {
+            if (!isNotHoliday) {
                 URL_MAP.put("lunchInfoHoliday", lunchInfoHoliday.toString());
                 return "holiday";
             }
@@ -291,32 +301,21 @@ public class Connection {
 
             for (Element item : elements) {
 
-                if (!item.attr("class").equals("elem double")) {
+                if (!item.attr("class").equals("food-item spec-block")) {
                     continue;
                 }
-
-                String title = (item.select("a").attr("title"));
-
-                if ((title.contains("понедельник"))
-                        || (title.contains("вторник"))
-                        || (title.contains("среда"))
-                        || (title.contains("четверг"))
-                        || (title.contains("пятница"))) {
-
-                    url = item.select("a").attr("abs:href");
-                    URL_MAP.put(url, Jsoup.connect(url).get().html());
-                    URL_MAP.put("lunchInfo", lunchInfo);
-                }
+                url = item.select("a").attr("abs:href");
+                URL_MAP.put(url, Jsoup.connect(url).get().html());
+                URL_MAP.put("lunchInfo", lunchInfo);
             }
 
             for (Map.Entry<String, String> entry : URL_MAP.entrySet()) {
-                System.out.println("Url = " + entry.getKey());
+                System.out.println("UrlOfLunch = " + entry.getKey());
             }
 
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage() + e);
-            LOGGER.error(Constants.UNEXPECTED_ERROR.concat(e.getMessage() + e));
-            System.out.println("Cashing url " + url + " again ...");
+        } catch (Exception ex) {
+            LOGGER.log(Level.ERROR, "Exception: ", ex);
+            LOGGER.log(Level.ERROR, "Caching url " + url + " again ...");
             cachingUrls(url);
         }
 
