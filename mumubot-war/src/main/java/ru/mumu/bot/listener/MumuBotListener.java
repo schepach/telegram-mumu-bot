@@ -2,13 +2,11 @@ package ru.mumu.bot.listener;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.json.JSONException;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.BotSession;
 import ru.mumu.bot.MumuBot;
-import ru.mumu.bot.constants.Constants;
+import ru.mumu.bot.schedulers.BroadcastScheduler;
 import ru.mumu.bot.schedulers.CachingScheduler;
 
 import javax.servlet.ServletContextEvent;
@@ -42,8 +40,10 @@ public class MumuBotListener implements ServletContextListener {
             CachingScheduler cachingScheduler = new CachingScheduler();
             time.schedule(cachingScheduler, 0, 36_000_000); //10 hours
 
-        } catch (TelegramApiException | JSONException e) {
-            LOGGER.error(Constants.UNEXPECTED_ERROR.concat(e.getMessage() + e));
+            BroadcastScheduler broadcastScheduler = new BroadcastScheduler();
+            time.schedule(broadcastScheduler, 0, 7_200_000); //2 hour
+
+
         } catch (Exception ex) {
             LOGGER.log(Level.ERROR, "Exception: ", ex);
         }
@@ -54,8 +54,9 @@ public class MumuBotListener implements ServletContextListener {
         try {
             LOGGER.info("ContextDestroyed: botSession stop....");
             botSession.stop();
+            time.cancel();
         } catch (Exception ex) {
-            LOGGER.log(Level.INFO, "Exception: ", ex);
+            LOGGER.log(Level.ERROR, "Destroyed exception: ", ex);
         }
     }
 }

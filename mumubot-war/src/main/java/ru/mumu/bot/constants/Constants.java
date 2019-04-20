@@ -42,8 +42,13 @@ public class Constants {
     public static final String ADDRESSES_URL = "https://vk.com/topic-39139909_28681126";
     public static final String MUMU_MAIN_PAGE_URL = "http://cafemumu.ru/catalog/";
 
+    // Scheduling Broadcasting time
+    public static final LocalTime START_BROADCASTING = LocalTime.of(11, 0, 0);
+    public static final LocalTime END_BROADCASTING = LocalTime.of(12, 0, 0);
+
+    // Scheduling caching time
     public static final LocalTime START_TIME = LocalTime.of(0, 0, 0);
     public static final LocalTime END_TIME = LocalTime.of(23, 59, 59);
-    public static final String CACHING_MESSAGE = "В данный момент идет кэширование. Пожалуйста, подождите...";
+    public static final String CACHING_MESSAGE_FOR_USER = "В данный момент идет обработка меню. Пожалуйста, подождите...";
 
 }

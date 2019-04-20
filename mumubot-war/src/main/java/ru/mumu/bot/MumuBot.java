@@ -1,23 +1,26 @@
 package ru.mumu.bot;
 
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.mumu.bot.constants.Constants;
+import redis.clients.jedis.Jedis;
 import ru.mumu.bot.utils.BotHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class MumuBot extends TelegramLongPollingBot {
 
-    private final Logger LOGGER = Logger.getLogger(this.getClass().getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(MumuBot.class.getSimpleName());
+    public static final Jedis REDIS_STORE = new Jedis("localhost", 6379);
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -42,9 +45,11 @@ public class MumuBot extends TelegramLongPollingBot {
             LOGGER.info("LastName: " + message.getFrom().getLastName());
             LOGGER.info("UserName: " + message.getFrom().getUserName());
             LOGGER.info("UserId: " + message.getFrom().getId());
+            LOGGER.info("ChatId: " + message.getChatId());
             LOGGER.info("CommandInput: " + message.getText());
             LOGGER.info("Current Date: " + currentDate);
 
+            checkRedisStore(String.valueOf(message.getChatId()));
             sendMsg(message, BotHelper.getLunchInfo(message.getText(), messageDay, currentDay));
         }
     }
@@ -58,7 +63,34 @@ public class MumuBot extends TelegramLongPollingBot {
         try {
             execute(sendMessage);
         } catch (TelegramApiException ex) {
-            LOGGER.error(Constants.UNEXPECTED_ERROR.concat(ex.getMessage()) + ex);
+            LOGGER.log(Level.ERROR, "TelegramApiException: ", ex);
+        }
+    }
+
+    protected static void checkRedisStore(String chatId) {
+
+        List<String> redisList = REDIS_STORE.lrange("MUMU_CHATID", 0, -1);
+
+        boolean isContains = false;
+
+        if (redisList == null || redisList.isEmpty()) {
+            LOGGER.info("Redis list MUMU_CHATID is empty, put first element");
+            REDIS_STORE.rpush("MUMU_CHATID", chatId);
+            return;
+        }
+
+        for (String elemOfRedis : redisList) {
+            if (chatId.equals(elemOfRedis)) {
+                isContains = true;
+                break;
+            }
+        }
+
+        if (!isContains) {
+            LOGGER.info("chatId = " + chatId + " does not exist in redis...put it");
+            REDIS_STORE.rpush("MUMU_CHATID", chatId);
+        } else {
+            LOGGER.info("chatId = " + chatId + " already exist in redis...go on");
         }
     }
 

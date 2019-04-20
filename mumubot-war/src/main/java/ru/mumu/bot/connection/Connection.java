@@ -42,8 +42,8 @@ public class Connection {
                 || URL_MAP.isEmpty()
                 || URL_MAP.get("done") == null
                 || URL_MAP.get("done").isEmpty()) {
-            System.out.println(Constants.CACHING_MESSAGE);
-            return Constants.CACHING_MESSAGE;
+            LOGGER.info("Caching in progress...");
+            return Constants.CACHING_MESSAGE_FOR_USER;
         }
 
         if (URL_MAP.get("lunchInfoHoliday") != null
@@ -279,6 +279,7 @@ public class Connection {
                     isNotHoliday = BotHelper.checkDayOfMonth(lunchInfo.replace(" ", ""), Calendar.getInstance().getTime());
                     LOGGER.info("isNotHoliday = " + isNotHoliday);
                 } catch (ParseException ex) {
+                    LOGGER.log(Level.ERROR, "ParseException: ", ex);
                     return Constants.UNEXPECTED_ERROR;
                 }
                 if (isNotHoliday) {
