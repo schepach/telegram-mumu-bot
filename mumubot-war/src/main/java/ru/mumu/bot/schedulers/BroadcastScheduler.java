@@ -49,18 +49,16 @@ public class BroadcastScheduler extends TimerTask {
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.HOUR_OF_DAY, 0);
 
-            String currentDay = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(calendar.getTime());
-            String messageDay = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(calendar.getTime());
+            String today = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(calendar.getTime());
+            LOGGER.log(Level.INFO, "Today is " + today);
 
-            LOGGER.log(Level.INFO, "currentDay = " + currentDay);
-            LOGGER.log(Level.INFO, "messageDay = " + messageDay);
-
-            String lunchInfo = BotHelper.getLunchInfo(Constants.TODAY, messageDay, currentDay);
+            String lunchInfo = BotHelper.getLunchInfo(Constants.TODAY, today, today);
 
             // Don't broadcasting menu, if holiday
             if (lunchInfo != null
                     && !lunchInfo.isEmpty()
                     && lunchInfo.equals(Constants.ERROR_HOLIDAY_DAY)) {
+                LOGGER.log(Level.ERROR, "Don't broadcasting menu, because holiday");
                 return;
             }
 

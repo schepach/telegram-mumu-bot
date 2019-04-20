@@ -132,21 +132,29 @@ public class BotHelper {
     }
 
     private static String checkCommandToday(String currentDay, String messageDay) {
+
         LOGGER.info("currentDay:  " + currentDay);
         LOGGER.info("messageDay:  " + messageDay);
 
-        if (currentDay.toLowerCase().equals("saturday") || currentDay.toLowerCase().equals("sunday")) {
-            return Constants.ERROR_HOLIDAY_DAY;
-        } else {
-            if (currentDay.equals(messageDay)) {
-                String weekDay = "/".concat(currentDay).toLowerCase();
-                LOGGER.info("WeekDay is : " + weekDay);
-                return Connection.getListUrl(weekDay);
-            } else {
-                LOGGER.info("Days are not equals!");
-                return null;
-            }
+        if (currentDay == null || currentDay.isEmpty()
+                || messageDay == null || messageDay.isEmpty()) {
+            LOGGER.info("currentDay or messageDay is null or is empty!");
+            return null;
         }
+
+        if (currentDay.toLowerCase().equals("saturday")
+                || currentDay.toLowerCase().equals("sunday")) {
+            return Constants.ERROR_HOLIDAY_DAY;
+        }
+
+        if (!currentDay.equals(messageDay)) {
+            LOGGER.info("Days are not equals!");
+            return null;
+        }
+
+        String weekDay = "/".concat(currentDay).toLowerCase();
+        LOGGER.info("WeekDay is : " + weekDay);
+        return Connection.getListUrl(weekDay);
     }
 
     public static boolean checkString(String str) {
