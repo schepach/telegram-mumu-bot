@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import redis.clients.jedis.Jedis;
+import ru.mumu.bot.constants.Constants;
 import ru.mumu.bot.utils.BotHelper;
 
 import java.text.SimpleDateFormat;
@@ -31,9 +32,21 @@ public class MumuBot extends TelegramLongPollingBot {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
 
+        String today = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(calendar.getTime());
+        LOGGER.log(Level.INFO, "Today is " + today);
+
         Message message = update.getMessage();
 
         if (message != null && message.hasText()) {
+
+            //If user wants to get menu in holiday or weekend, he will get message, that menu is only from Monday to Friday
+            // Besides commands: ADDRESSES and HELP
+            if ((today.equals("Saturday") || today.equals("Sunday"))
+                    && !(message.getText().equals(Constants.ADDRESSES)
+                    || message.getText().equals(Constants.HELP))) {
+                sendMsg(message, Constants.ERROR_HOLIDAY_DAY);
+                return;
+            }
 
             String currentDay = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(calendar.getTime());
             Date messageDate = new Date((long) message.getDate() * 1000);

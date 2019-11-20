@@ -52,12 +52,23 @@ public class BroadcastScheduler extends TimerTask {
             String today = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(calendar.getTime());
             LOGGER.log(Level.INFO, "Today is " + today);
 
-            String lunchInfo = BotHelper.getLunchInfo(Constants.TODAY, today, today);
+            if (today.equals("Saturday") || today.equals("Sunday")) {
+                LOGGER.info("Don't broadcasting menu, because today is holiday");
+                return;
+            }
+
+            String lunchInfo = BotHelper.getLunchInfo("/".concat(today.toLowerCase()), today, today);
+
+            // Don't broadcasting menu, if lunchInfo is null or is empty
+            if (lunchInfo == null || lunchInfo.isEmpty()) {
+                LOGGER.log(Level.ERROR, "lunchInfo is null or is empty");
+                return;
+            }
 
             // Don't broadcasting menu, if holiday
-            if (lunchInfo != null
-                    && !lunchInfo.isEmpty()
-                    && lunchInfo.equals(Constants.ERROR_HOLIDAY_DAY)) {
+            //TODO: Perhaps, condition ERROR_HOLIDAY_DAY is redundant, check it
+            if (lunchInfo.equals(Constants.INFO_HOLIDAY_DAY)
+                    || lunchInfo.equals(Constants.ERROR_HOLIDAY_DAY)) {
                 LOGGER.log(Level.ERROR, "Don't broadcasting menu, because holiday");
                 return;
             }

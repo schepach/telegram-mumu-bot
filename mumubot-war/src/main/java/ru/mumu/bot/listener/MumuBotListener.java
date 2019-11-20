@@ -38,11 +38,11 @@ public class MumuBotListener implements ServletContextListener {
 
             time = new Timer();
             CachingScheduler cachingScheduler = new CachingScheduler();
-            time.schedule(cachingScheduler, 0, 36_000_000); //10 hours
+            // Caching only when server is restart
+            time.schedule(cachingScheduler, 0);
 
             BroadcastScheduler broadcastScheduler = new BroadcastScheduler();
             time.schedule(broadcastScheduler, 0, 7_200_000); //2 hour
-
 
         } catch (Exception ex) {
             LOGGER.log(Level.ERROR, "Exception: ", ex);

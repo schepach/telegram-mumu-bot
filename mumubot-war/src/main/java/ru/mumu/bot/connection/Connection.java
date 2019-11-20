@@ -1,7 +1,6 @@
 package ru.mumu.bot.connection;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -15,12 +14,18 @@ import ru.mumu.bot.constants.Constants;
 import ru.mumu.bot.utils.BotHelper;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Connection {
 
     private static final Logger LOGGER = Logger.getLogger(Connection.class.getSimpleName());
     public static Map<String, String> URL_MAP = new HashMap<>();
+    private static final Pattern patternDate = Pattern.compile("\\d\\d/\\d\\d/\\d\\d\\d\\d");
 
     public static String sendRequest(String command) {
         String[] url = new String[2];
@@ -48,7 +53,6 @@ public class Connection {
 
         if (URL_MAP.get("lunchInfoHoliday") != null
                 && !URL_MAP.get("lunchInfoHoliday").isEmpty()) {
-
             LOGGER.info("Today is Holiday!");
             return "Ближайшие: " + URL_MAP.get("lunchInfoHoliday");
         }
@@ -85,12 +89,18 @@ public class Connection {
 
     private static String getMumuLunch(List<String> urls, String dateInfo) throws IOException {
 
-        String price = "";
+        String price;
         String caption = "";
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(Constants.TIME_LUNCH).append("\n").append("\uD83C\uDF74".concat(dateInfo.trim()).concat("\uD83C\uDF7D").toUpperCase());
 
         try {
+
+            //Если отсутствует url для текущего дня недели, то ланчей на текущий день нет
+            // Возможно, потому что праздник или выходной день
+            if (urls == null || urls.isEmpty()) {
+                return Constants.INFO_HOLIDAY_DAY;
+            }
 
             for (String keyOfMap : urls) {
 
@@ -151,6 +161,10 @@ public class Connection {
             return Constants.UNEXPECTED_ERROR;
         }
 
+        // Перестраховка, если есть url с ланчем, но в нем нет информации по меню
+        if (stringBuilder.toString().isEmpty())
+            return Constants.INFO_HOLIDAY_DAY;
+
         return stringBuilder.toString();
     }
 
@@ -169,23 +183,44 @@ public class Connection {
 
             stringBuilder.append(Constants.VICTORIA_TEXT).append(Constants.TIME_LUNCH + "\n").append(info);
 
-            Elements elements = doc.select("td");
+            // Get items in <div class="container">
+            Elements elementsDate = doc.select("div").attr("class", "container");
+
+            for (Element itemDate : elementsDate) {
+
+                // Get date of lunch
+                // If item (tag h3) not null/is empty and doesn't match of pattern - get next element
+                if (itemDate.select("h3") != null
+                        && itemDate.select("h3").text() != null
+                        && !itemDate.select("h3").text().isEmpty()) {
+                    Matcher matcher = patternDate.matcher(itemDate.select("h3").text());
+
+                    if (matcher.matches()) {
+                        date = itemDate.select("h3").text();
+                        break;
+                    }
+                }
+            }
+
+            stringBuilder.append(date).append("\uD83C\uDF7D").append("\n");
+
+            //Get items of lunch
+            Elements elements = doc.select("div").attr("class", "menu-section").select("tr");
 
             int count = 1;
             for (Element item : elements) {
 
-                if (item.attr("class").equals("text")) {
-                    date = item.text();
-                    if (!date.isEmpty()) {
-                        stringBuilder.append(date).append("\uD83C\uDF7D").append("\n");
-                        stringBuilder.append("\n");
-                    }
+                if (item == null
+                        || !item.hasText()
+                        || item.text() == null
+                        || item.text().isEmpty()) {
+                    continue;
                 }
-                if (item.attr("class").equals("mdish") || item.attr("class").equals("mtext")) {
-                    elemMenu = item.text();
-                    stringBuilder.append(count).append(". ").append(elemMenu).append("\n");
-                    count++;
-                }
+
+                elemMenu = item.select("td").select("span").first().text();
+                stringBuilder.append(count).append(". ").append(elemMenu).append("\n");
+                count++;
+
             }
             LOGGER.info("Date: " + date);
             LOGGER.info("LUNCH_VICTORIA: \n" + lunchItems);
@@ -256,10 +291,7 @@ public class Connection {
             getResponseCode(Constants.MUMU_MAIN_PAGE_URL);
             Document doc = Jsoup.connect(Constants.MUMU_MAIN_PAGE_URL).get();
             Elements elements = doc.select("a");
-
-            boolean isNotHoliday = false;
             String lunchInfo = null;
-            StringBuilder lunchInfoHoliday = new StringBuilder();
 
             for (Element elem : elements) {
 
@@ -274,26 +306,10 @@ public class Connection {
                     LOGGER.log(Level.ERROR, "Break caching pages ...");
                     return Constants.UNEXPECTED_ERROR;
                 }
+                url = elem.attr("abs:href");
+                LOGGER.info("UrlWithLunches = " + url);
+                break;
 
-                try {
-                    isNotHoliday = BotHelper.checkDayOfMonth(lunchInfo.replace(" ", ""), Calendar.getInstance().getTime());
-                    LOGGER.info("isNotHoliday = " + isNotHoliday);
-                } catch (ParseException ex) {
-                    LOGGER.log(Level.ERROR, "ParseException: ", ex);
-                    return Constants.UNEXPECTED_ERROR;
-                }
-                if (isNotHoliday) {
-                    url = elem.attr("abs:href");
-                    LOGGER.info("UrlWithLunches = " + url);
-                    break;
-                } else {
-                    lunchInfoHoliday.append("\n").append(lunchInfo).append("\n");
-                }
-            }
-
-            if (!isNotHoliday) {
-                URL_MAP.put("lunchInfoHoliday", lunchInfoHoliday.toString());
-                return "holiday";
             }
 
             getResponseCode(url);

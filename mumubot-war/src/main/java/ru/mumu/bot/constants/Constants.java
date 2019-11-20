@@ -31,7 +31,8 @@ public class Constants {
     public static final String BAD_COMMAND = "Bad command! ";
     public static final String TIME_LUNCH = "Время обеда: 12:00-16:00";
     public static final String ERROR_OTHER_INPUT = "bad command! \n If I can help you - enter /help";
-    public static final String ERROR_HOLIDAY_DAY = "today is holiday! The menu will be from Monday to Friday.";
+    public static final String ERROR_HOLIDAY_DAY = "today is holiday! The menu is only from Monday to Friday.";
+    public static final String INFO_HOLIDAY_DAY = "В праздничный/выходной день ланчей нет";
     public static final String UNEXPECTED_ERROR = "Что-то пошло не так, попробуйте повторить попытку позднее...";
     public static final String ADDRESSES_TEXT = "cafe Mumu address: \n";
     public static final String CAFE_MUMU_TEXT = "in Mumu cafe for you: \n\n";
@@ -47,8 +48,9 @@ public class Constants {
     public static final LocalTime END_BROADCASTING = LocalTime.of(12, 0, 0);
 
     // Scheduling caching time
-    public static final LocalTime START_TIME = LocalTime.of(0, 0, 0);
-    public static final LocalTime END_TIME = LocalTime.of(23, 59, 59);
+    // Caching only when server is restart (so far)
+    // public static final LocalTime START_TIME = LocalTime.of(0, 0, 0);
+    // public static final LocalTime END_TIME = LocalTime.of(23, 59, 59);
     public static final String CACHING_MESSAGE_FOR_USER = "В данный момент идет обработка меню. Пожалуйста, подождите...";
 
 }

@@ -5,17 +5,12 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.mumu.bot.connection.Connection;
 import ru.mumu.bot.constants.Constants;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BotHelper {
 
     private static final Logger LOGGER = Logger.getLogger(BotHelper.class.getSimpleName());
-    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("dd/MM/yyyy");
     private static final Pattern PATTERN = Pattern.compile("горошек|кукуруза\\)");
 
     public static String getLunchInfo(String command, String messageDay, String currentDay) {
@@ -89,46 +84,6 @@ public class BotHelper {
         }
 
         return textForUser;
-    }
-
-    public static Boolean checkDayOfMonth(String groupInfo, Date dateCurrent) throws Exception {
-        LOGGER.info("Check groupInfo = " + groupInfo);
-
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        String[] arrGroupInfo = groupInfo.split("");
-        String dateStart = arrGroupInfo[6] + arrGroupInfo[7] + "/" + arrGroupInfo[9] + arrGroupInfo[10] + "/" + currentYear;
-        String dateEnd = arrGroupInfo[16] + arrGroupInfo[17] + "/" + arrGroupInfo[19] + arrGroupInfo[20] + "/" + currentYear;
-
-        Date startDate;
-        Date endDate;
-
-        try {
-            startDate = convertStringToDate(dateStart.replace(".", ""));
-            endDate = convertStringToDate(dateEnd.replace(".", ""));
-        } catch (ParseException ex) {
-            throw new ParseException(Constants.UNEXPECTED_ERROR, ex.getErrorOffset());
-        }
-
-        LOGGER.info("CurrentDate = " + dateCurrent);
-        LOGGER.info("StartDate  = " + startDate);
-        LOGGER.info("EndDate  = " + endDate);
-
-        return dateCurrent.after(startDate) && dateCurrent.before(endDate) || dateCurrent.toString().equals(endDate.toString())
-                || dateCurrent.getTime() > endDate.getTime();
-    }
-
-    private static Date convertStringToDate(String strDate) throws ParseException {
-        Date date = null;
-
-        try {
-            date = FORMATTER.parse(strDate);
-            LOGGER.info("Date from converter: " + date);
-
-        } catch (ParseException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            throw new ParseException(ex.getMessage(), ex.getErrorOffset());
-        }
-        return date;
     }
 
     private static String checkCommandToday(String currentDay, String messageDay) {
