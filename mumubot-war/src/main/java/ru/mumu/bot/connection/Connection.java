@@ -4,8 +4,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -18,6 +16,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,13 +47,13 @@ public class Connection {
                 || URL_MAP.isEmpty()
                 || URL_MAP.get("done") == null
                 || URL_MAP.get("done").isEmpty()) {
-            LOGGER.info("Caching in progress...");
+            LOGGER.log(Level.SEVERE, "Caching in progress...");
             return Constants.CACHING_MESSAGE_FOR_USER;
         }
 
         if (URL_MAP.get("lunchInfoHoliday") != null
                 && !URL_MAP.get("lunchInfoHoliday").isEmpty()) {
-            LOGGER.info("Today is Holiday!");
+            LOGGER.log(Level.SEVERE, "Today is Holiday");
             return "Ближайшие: " + URL_MAP.get("lunchInfoHoliday");
         }
 
@@ -81,7 +81,7 @@ public class Connection {
             return getMumuLunch(listURLS, URL_MAP.get("lunchInfo"));
 
         } catch (Exception ex) {
-            LOGGER.log(Level.ERROR, "Exception: ", ex);
+            LOGGER.log(Level.SEVERE, "Exception: ", ex);
         }
 
         return "";
@@ -157,7 +157,7 @@ public class Connection {
             }
             LOGGER.info("LUNCH_MUMU: \n" + stringBuilder.toString());
         } catch (Exception ex) {
-            LOGGER.log(Level.ERROR, "Exception: ", ex);
+            LOGGER.log(Level.SEVERE, "Exception: ", ex);
             return Constants.UNEXPECTED_ERROR;
         }
 
@@ -226,7 +226,7 @@ public class Connection {
             LOGGER.info("LUNCH_VICTORIA: \n" + lunchItems);
 
         } catch (Exception ex) {
-            LOGGER.log(Level.ERROR, "Exception: ", ex);
+            LOGGER.log(Level.SEVERE, "Exception: ", ex);
             return Constants.UNEXPECTED_ERROR;
         }
         return stringBuilder.toString();
@@ -270,7 +270,7 @@ public class Connection {
                 }
             }
         } catch (Exception ex) {
-            LOGGER.log(Level.ERROR, "Exception: ", ex);
+            LOGGER.log(Level.SEVERE, "Exception: ", ex);
             return Constants.UNEXPECTED_ERROR;
         }
 
@@ -302,12 +302,12 @@ public class Connection {
                 lunchInfo = elem.select("div").text();
 
                 if (lunchInfo == null || lunchInfo.isEmpty()) {
-                    LOGGER.log(Level.ERROR, "lunchInfo from cachingUrls method is null or is empty!");
-                    LOGGER.log(Level.ERROR, "Break caching pages ...");
+                    LOGGER.log(Level.SEVERE, "lunchInfo from cachingUrls method is null or is empty");
+                    LOGGER.log(Level.SEVERE, "Break caching pages ...");
                     return Constants.UNEXPECTED_ERROR;
                 }
                 url = elem.attr("abs:href");
-                LOGGER.info("UrlWithLunches = " + url);
+                LOGGER.log(Level.SEVERE, "UrlWithLunches = " + url);
                 break;
 
             }
@@ -331,8 +331,8 @@ public class Connection {
             }
 
         } catch (Exception ex) {
-            LOGGER.log(Level.ERROR, "Exception: ", ex);
-            LOGGER.log(Level.ERROR, "Caching url " + url + " again ...");
+            LOGGER.log(Level.SEVERE, "Exception: ", ex);
+            LOGGER.log(Level.SEVERE, "Caching url " + url + " again ...");
             cachingUrls(url);
         }
 

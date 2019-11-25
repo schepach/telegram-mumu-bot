@@ -1,35 +1,37 @@
 package ru.mumu.bot.schedulers;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import ru.mumu.bot.connection.Connection;
 import ru.mumu.bot.constants.Constants;
 
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CachingScheduler extends TimerTask {
 
-    private final Logger LOGGER = Logger.getLogger(this.getClass().getSimpleName());
+    private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
     @Override
     public void run() {
 
-        LOGGER.log(Level.INFO, "From CachingScheduler...");
+        logger.log(Level.SEVERE, "From CachingScheduler...");
 
         try {
             Connection.URL_MAP.clear();
             String caching = Connection.cachingUrls(Constants.MUMU_MAIN_PAGE_URL);
 
-            if (caching.equals(Constants.UNEXPECTED_ERROR))
+            if (caching.equals(Constants.UNEXPECTED_ERROR)) {
+                logger.log(Level.SEVERE, "Don't caching, because unexpected error");
                 return;
+            }
 
             Connection.URL_MAP.put("done", "true");
             if (!caching.isEmpty() && caching.equals("caching")) {
-                LOGGER.info("Caching done...");
+                logger.log(Level.SEVERE, "Caching done...");
             }
 
         } catch (Exception ex) {
-            LOGGER.log(Level.ERROR, "Exception: ", ex);
+            logger.log(Level.SEVERE, "Exception: ", ex);
         }
     }
 }

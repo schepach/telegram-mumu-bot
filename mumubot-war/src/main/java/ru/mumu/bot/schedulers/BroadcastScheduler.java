@@ -1,7 +1,5 @@
 package ru.mumu.bot.schedulers;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.mumu.bot.MumuBot;
@@ -14,33 +12,35 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class BroadcastScheduler extends TimerTask {
 
-    private final Logger LOGGER = Logger.getLogger(this.getClass().getSimpleName());
+    private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
     @Override
     public void run() {
 
-        LOGGER.log(Level.INFO, "From BroadcastScheduler...");
+        logger.log(Level.SEVERE, "From BroadcastScheduler...");
 
         try {
 
             Calendar calendar = Calendar.getInstance();
             LocalTime currentTime = LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
-            LOGGER.info("Current time for broadcasting = " + currentTime);
+            logger.log(Level.SEVERE, "Current time for broadcasting = " + currentTime);
 
             if (!currentTime.equals(Constants.START_BROADCASTING)
                     && !(currentTime.isAfter(Constants.START_BROADCASTING)
                     && currentTime.isBefore(Constants.END_BROADCASTING))) {
-                LOGGER.info("Don't broadcasting menu, because the current time isn't valid");
+                logger.log(Level.SEVERE, "Don't broadcasting menu, because the current time isn't valid");
                 return;
             }
 
             List<String> redisList = MumuBot.REDIS_STORE.lrange("MUMU_CHATID", 0, -1);
 
             if (redisList == null || redisList.isEmpty()) {
-                LOGGER.log(Level.INFO, "redisList MUMU_CHATID is null or is empty");
+                logger.log(Level.SEVERE, "redisList MUMU_CHATID is null or is empty");
                 return;
             }
 
@@ -50,10 +50,10 @@ public class BroadcastScheduler extends TimerTask {
             calendar.set(Calendar.HOUR_OF_DAY, 0);
 
             String today = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(calendar.getTime());
-            LOGGER.log(Level.INFO, "Today is " + today);
+            logger.log(Level.SEVERE, "Today is " + today);
 
             if (today.equals("Saturday") || today.equals("Sunday")) {
-                LOGGER.info("Don't broadcasting menu, because today is holiday");
+                logger.log(Level.SEVERE, "Don't broadcasting menu, because today is holiday");
                 return;
             }
 
@@ -61,7 +61,7 @@ public class BroadcastScheduler extends TimerTask {
 
             // Don't broadcasting menu, if lunchInfo is null or is empty
             if (lunchInfo == null || lunchInfo.isEmpty()) {
-                LOGGER.log(Level.ERROR, "lunchInfo is null or is empty");
+                logger.log(Level.SEVERE, "Don't broadcasting menu, because lunchInfo is null or is empty");
                 return;
             }
 
@@ -69,20 +69,20 @@ public class BroadcastScheduler extends TimerTask {
             //TODO: Perhaps, condition ERROR_HOLIDAY_DAY is redundant, check it
             if (lunchInfo.equals(Constants.INFO_HOLIDAY_DAY)
                     || lunchInfo.equals(Constants.ERROR_HOLIDAY_DAY)) {
-                LOGGER.log(Level.ERROR, "Don't broadcasting menu, because holiday");
+                logger.log(Level.SEVERE, "Don't broadcasting menu, because holiday");
                 return;
             }
 
             for (String elemOfRedis : redisList) {
-                LOGGER.log(Level.INFO, "Broadcasting for chatId = " + elemOfRedis);
+                logger.log(Level.SEVERE, "Broadcasting for chatId = " + elemOfRedis);
                 try {
                     new MumuBot().execute(new SendMessage().setChatId(elemOfRedis).setText(lunchInfo));
                 } catch (TelegramApiException ex) {
-                    LOGGER.log(Level.ERROR, "Broadcasting error for chatId = " + elemOfRedis, ex);
+                    logger.log(Level.SEVERE, "Broadcasting error for chatId = " + elemOfRedis + ", because " + ex.getMessage());
                 }
             }
         } catch (Exception ex) {
-            LOGGER.log(Level.ERROR, "Exception: ", ex);
+            logger.log(Level.SEVERE, "Exception: ", ex);
         }
 
     }

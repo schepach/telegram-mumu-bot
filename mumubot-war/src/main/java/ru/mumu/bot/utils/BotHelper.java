@@ -1,10 +1,11 @@
 package ru.mumu.bot.utils;
 
-import org.apache.log4j.Logger;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.mumu.bot.connection.Connection;
 import ru.mumu.bot.constants.Constants;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,10 +29,10 @@ public class BotHelper {
 
         switch (command) {
             case Constants.HELP:
-                LOGGER.info("TextForUser: " + Constants.HELP_TEXT);
+                LOGGER.log(Level.INFO, "TextForUser: " + Constants.HELP_TEXT);
                 return Constants.HELP_TEXT;
             case Constants.START:
-                LOGGER.info("TextForUser: " + command);
+                LOGGER.log(Level.INFO, "TextForUser: " + command);
                 return Constants.START_TEXT;
             case Constants.MONDAY:
             case Constants.TUESDAY:
@@ -45,7 +46,7 @@ public class BotHelper {
             case Constants.TODAY:
                 return checkCommandToday(currentDay, messageDay);
             default:
-                LOGGER.info("TextForUser: " + Constants.ERROR_OTHER_INPUT);
+                LOGGER.log(Level.INFO, "TextForUser: " + Constants.ERROR_OTHER_INPUT);
                 return Constants.ERROR_OTHER_INPUT;
         }
     }
@@ -68,7 +69,7 @@ public class BotHelper {
             case Constants.ERROR_OTHER_INPUT:
             case Constants.HELP_TEXT:
             case Constants.UNEXPECTED_ERROR:
-                LOGGER.info("TextForUser: " + text);
+                LOGGER.log(Level.INFO, "TextForUser: " + text);
                 textForUser = userName.concat(", ").concat(text);
                 break;
             case Constants.START_TEXT:
@@ -88,27 +89,28 @@ public class BotHelper {
 
     private static String checkCommandToday(String currentDay, String messageDay) {
 
-        LOGGER.info("currentDay:  " + currentDay);
-        LOGGER.info("messageDay:  " + messageDay);
+        LOGGER.log(Level.INFO, "currentDay:  " + currentDay);
+        LOGGER.log(Level.INFO, "messageDay:  " + messageDay);
 
         if (currentDay == null || currentDay.isEmpty()
                 || messageDay == null || messageDay.isEmpty()) {
-            LOGGER.info("currentDay or messageDay is null or is empty!");
+            LOGGER.log(Level.SEVERE, "currentDay or messageDay is null or is empty");
             return null;
         }
 
         if (currentDay.toLowerCase().equals("saturday")
                 || currentDay.toLowerCase().equals("sunday")) {
+            LOGGER.log(Level.SEVERE, "currentDay is saturday or sunday");
             return Constants.ERROR_HOLIDAY_DAY;
         }
 
         if (!currentDay.equals(messageDay)) {
-            LOGGER.info("Days are not equals!");
+            LOGGER.log(Level.SEVERE, "Days are not equals");
             return null;
         }
 
         String weekDay = "/".concat(currentDay).toLowerCase();
-        LOGGER.info("WeekDay is : " + weekDay);
+        LOGGER.log(Level.INFO, "WeekDay is : " + weekDay);
         return Connection.getListUrl(weekDay);
     }
 
