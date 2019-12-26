@@ -317,13 +317,17 @@ public class Connection {
             elements = doc.select("div");
 
             for (Element item : elements) {
-
-                if (!item.attr("class").equals("food-item spec-block")) {
+                if (!item.attr("class").equals("food-item spec-block product-labels-wrapper")) {
                     continue;
                 }
                 url = item.select("a").attr("abs:href");
                 URL_MAP.put(url, Jsoup.connect(url).get().html());
                 URL_MAP.put("lunchInfo", lunchInfo);
+            }
+
+            if (URL_MAP == null || URL_MAP.isEmpty()) {
+                LOGGER.log(Level.SEVERE, "Произошла непредвиденная ошибка: URL_MAP is null or is empty");
+                return Constants.UNEXPECTED_ERROR;
             }
 
             for (Map.Entry<String, String> entry : URL_MAP.entrySet()) {
