@@ -6,13 +6,10 @@ import ru.mumu.bot.constants.Constants;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class BotHelper {
 
     private static final Logger LOGGER = Logger.getLogger(BotHelper.class.getSimpleName());
-    private static final Pattern PATTERN = Pattern.compile("горошек|кукуруза\\)");
 
     public static String getLunchInfo(String command, String messageDay, String currentDay) {
 
@@ -112,10 +109,5 @@ public class BotHelper {
         String weekDay = "/".concat(currentDay).toLowerCase();
         LOGGER.log(Level.INFO, "WeekDay is : " + weekDay);
         return Connection.getListUrl(weekDay);
-    }
-
-    public static boolean checkString(String str) {
-        Matcher m = PATTERN.matcher(str);
-        return m.matches();
     }
 }
