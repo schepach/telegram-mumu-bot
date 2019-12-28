@@ -26,10 +26,8 @@ public class BotHelper {
 
         switch (command) {
             case Constants.HELP:
-                LOGGER.log(Level.INFO, "TextForUser: " + Constants.HELP_TEXT);
                 return Constants.HELP_TEXT;
             case Constants.START:
-                LOGGER.log(Level.INFO, "TextForUser: " + command);
                 return Constants.START_TEXT;
             case Constants.MONDAY:
             case Constants.TUESDAY:
@@ -38,14 +36,38 @@ public class BotHelper {
             case Constants.FRIDAY:
                 return Connection.getListUrl(command);
             case Constants.VICTORIA:
+                return Connection.getVictoriaLunch(Constants.VICTORIA_URL);
             case Constants.ADDRESSES:
-                return Connection.sendRequest(command);
+                return Connection.getMumuAddresses(Constants.ADDRESSES_URL);
             case Constants.TODAY:
                 return checkCommandToday(currentDay, messageDay);
             default:
-                LOGGER.log(Level.INFO, "TextForUser: " + Constants.ERROR_OTHER_INPUT);
                 return Constants.ERROR_OTHER_INPUT;
         }
+    }
+
+    public static String checkDayForHoliday(String command, String today) {
+        if (today.equals("Saturday") || today.equals("Sunday")) {
+            switch (command) {
+                case Constants.MONDAY:
+                case Constants.TUESDAY:
+                case Constants.WEDNESDAY:
+                case Constants.THURSDAY:
+                case Constants.FRIDAY:
+                case Constants.VICTORIA:
+                case Constants.TODAY:
+                    return Constants.ERROR_HOLIDAY_DAY;
+                case Constants.HELP:
+                    return Constants.HELP_TEXT;
+                case Constants.START:
+                    return Constants.START_TEXT;
+                case Constants.ADDRESSES:
+                    return Connection.getMumuAddresses(Constants.ADDRESSES_URL);
+                default:
+                    return Constants.ERROR_OTHER_INPUT;
+            }
+        }
+        return null;
     }
 
     public static String getTextForUser(Message message, String text) {

@@ -28,20 +28,6 @@ public class Connection {
     private static final Pattern PATTERN_MENU = Pattern.compile("^([а-яА-я]*\\s?-?([а-яА-я]*)?,?){1,}(\\([а-яА-Я]*(,\\s?[а-яА-Я]*){1,}\\))?,?\\s?([а-яА-я]*\\s?-?([а-яА-я]*)?,?){1,}\\.");
     private static final Pattern PATTERN_MENU_REPLACE = Pattern.compile("(\\([а-яА-Я]*(,\\s?[а-яА-Я]*){1,}\\))");
 
-    public static String sendRequest(String command) {
-        String[] url = new String[2];
-        switch (command) {
-            case Constants.VICTORIA:
-                url[0] = Constants.VICTORIA_URL;
-                return getVictoriaLunch(url[0]);
-            case Constants.ADDRESSES:
-                url[0] = Constants.ADDRESSES_URL;
-                return getMumuAddresses(url[0]);
-            default:
-                return Constants.BAD_COMMAND.concat(command);
-        }
-    }
-
     public static String getListUrl(String command) {
 
         if (URL_MAP == null
@@ -179,7 +165,7 @@ public class Connection {
         return stringBuilder.toString();
     }
 
-    private static String getVictoriaLunch(String url) {
+    public static String getVictoriaLunch(String url) {
 
         String lunchItems = "";
         String date = "";
@@ -243,7 +229,7 @@ public class Connection {
         return stringBuilder.toString();
     }
 
-    private static String getMumuAddresses(String url) {
+    public static String getMumuAddresses(String url) {
 
         StringBuilder stringBuilder = new StringBuilder();
 
