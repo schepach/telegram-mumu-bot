@@ -1,4 +1,4 @@
-package ru.mumu.bot.model;
+package ru.mumu.bot.entity;
 
 public abstract class AbstractCafe {
 

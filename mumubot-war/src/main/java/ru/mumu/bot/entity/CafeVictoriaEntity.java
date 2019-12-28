@@ -1,4 +1,4 @@
-package ru.mumu.bot.model;
+package ru.mumu.bot.entity;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -12,9 +12,9 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CafeVictoria extends AbstractCafe {
+public class CafeVictoriaEntity extends AbstractCafe {
 
-    private static final Logger LOGGER = Logger.getLogger(CafeVictoria.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(CafeVictoriaEntity.class.getSimpleName());
     private static final Pattern PATTERN_DATE = Pattern.compile("\\d\\d/\\d\\d/\\d\\d\\d\\d");
 
     @Override

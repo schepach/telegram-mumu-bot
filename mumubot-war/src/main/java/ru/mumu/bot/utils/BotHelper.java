@@ -1,8 +1,8 @@
 package ru.mumu.bot.utils;
 
 import ru.mumu.bot.constants.Constants;
-import ru.mumu.bot.model.CafeMumu;
-import ru.mumu.bot.model.CafeVictoria;
+import ru.mumu.bot.entity.CafeMumuEntity;
+import ru.mumu.bot.entity.CafeVictoriaEntity;
 import ru.mumu.bot.redis.RedisManager;
 
 public class BotHelper {
@@ -34,13 +34,13 @@ public class BotHelper {
             case Constants.WEDNESDAY:
             case Constants.THURSDAY:
             case Constants.FRIDAY:
-                return new CafeMumu(command).getMenu();
+                return new CafeMumuEntity(command).getMenu();
             case Constants.VICTORIA:
-                return new CafeVictoria().getMenu();
+                return new CafeVictoriaEntity().getMenu();
             case Constants.ADDRESSES:
-                return new CafeMumu().getAddresses();
+                return new CafeMumuEntity().getAddresses();
             case Constants.TODAY:
-                return new CafeMumu(Utils.checkCommandToday(currentDay, messageDay)).getMenu();
+                return new CafeMumuEntity(Utils.checkCommandToday(currentDay, messageDay)).getMenu();
             default:
                 return Constants.ERROR_OTHER_INPUT;
         }
@@ -58,7 +58,7 @@ public class BotHelper {
                 case Constants.TODAY:
                     return Constants.ERROR_HOLIDAY_DAY;
                 case Constants.ADDRESSES:
-                    return new CafeMumu().getAddresses();
+                    return new CafeMumuEntity().getAddresses();
                 case Constants.START:
                     return Constants.START_TEXT;
                 case Constants.HELP:

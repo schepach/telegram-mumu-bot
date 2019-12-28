@@ -1,4 +1,4 @@
-package ru.mumu.bot.model;
+package ru.mumu.bot.entity;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,18 +16,18 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CafeMumu extends AbstractCafe {
+public class CafeMumuEntity extends AbstractCafe {
 
     private final Logger LOGGER = Logger.getLogger(this.getClass().getSimpleName());
     private static final Pattern PATTERN_MENU = Pattern.compile("^([а-яА-я]*\\s?-?([а-яА-я]*)?,?){1,}(\\([а-яА-Я]*(,\\s?[а-яА-Я]*){1,}\\))?,?\\s?([а-яА-я]*\\s?-?([а-яА-я]*)?,?){1,}\\.");
     private static final Pattern PATTERN_MENU_REPLACE = Pattern.compile("(\\([а-яА-Я]*(,\\s?[а-яА-Я]*){1,}\\))");
     private final String command;
 
-    public CafeMumu() {
+    public CafeMumuEntity() {
         this.command = null;
     }
 
-    public CafeMumu(String command) {
+    public CafeMumuEntity(String command) {
         this.command = command;
     }
 
