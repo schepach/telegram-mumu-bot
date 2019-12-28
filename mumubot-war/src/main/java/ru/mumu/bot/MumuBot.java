@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.mumu.bot.redis.RedisManager;
 import ru.mumu.bot.utils.BotHelper;
 import ru.mumu.bot.utils.Utils;
 
@@ -36,6 +37,8 @@ public class MumuBot extends TelegramLongPollingBot {
 
         if (message != null && message.hasText()) {
 
+            RedisManager.checkRedisStore(String.valueOf(message.getChatId()));
+
             //If user wants to get menu in holiday or weekend, he will get message, that menu is only from Monday to Friday
             // Besides commands: ADDRESSES, HELP and START
             String holidayInfo = BotHelper.checkDayForHoliday(message.getText(), today);
@@ -58,7 +61,7 @@ public class MumuBot extends TelegramLongPollingBot {
             LOGGER.log(Level.INFO, "CommandInput: " + message.getText());
             LOGGER.log(Level.INFO, "Current Date: " + currentDate);
 
-            String info = BotHelper.getInfo(message.getText(), String.valueOf(message.getChatId()), messageDay, currentDay);
+            String info = BotHelper.getInfo(message.getText(), messageDay, currentDay);
             sendMessage(message, info);
         }
     }

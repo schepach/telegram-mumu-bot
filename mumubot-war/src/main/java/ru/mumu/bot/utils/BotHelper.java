@@ -3,14 +3,8 @@ package ru.mumu.bot.utils;
 import ru.mumu.bot.constants.Constants;
 import ru.mumu.bot.entity.CafeMumuEntity;
 import ru.mumu.bot.entity.CafeVictoriaEntity;
-import ru.mumu.bot.redis.RedisManager;
 
 public class BotHelper {
-
-    public static String getInfo(String command, String chatId, String messageDay, String currentDay) {
-        RedisManager.checkRedisStore(chatId);
-        return getInfo(command, messageDay, currentDay);
-    }
 
     public static String getInfo(String command, String messageDay, String currentDay) {
 
