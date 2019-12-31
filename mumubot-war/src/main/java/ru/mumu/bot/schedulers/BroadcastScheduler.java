@@ -4,6 +4,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.mumu.bot.MumuBot;
 import ru.mumu.bot.constants.Constants;
+import ru.mumu.bot.redis.RedisManager;
 import ru.mumu.bot.utils.BotHelper;
 
 import java.text.SimpleDateFormat;
@@ -37,7 +38,7 @@ public class BroadcastScheduler extends TimerTask {
                 return;
             }
 
-            List<String> redisList = MumuBot.REDIS_STORE.lrange("MUMU_CHATID", 0, -1);
+            List<String> redisList = RedisManager.REDIS_STORE.lrange("MUMU_CHATID", 0, -1);
 
             if (redisList == null || redisList.isEmpty()) {
                 logger.log(Level.SEVERE, "redisList MUMU_CHATID is null or is empty");
@@ -57,7 +58,7 @@ public class BroadcastScheduler extends TimerTask {
                 return;
             }
 
-            String lunchInfo = BotHelper.getLunchInfo("/".concat(today.toLowerCase()), today, today);
+            String lunchInfo = BotHelper.getInfo("/".concat(today.toLowerCase()), today, today);
 
             // Don't broadcasting menu, if lunchInfo is null or is empty
             if (lunchInfo == null || lunchInfo.isEmpty()) {
@@ -66,9 +67,7 @@ public class BroadcastScheduler extends TimerTask {
             }
 
             // Don't broadcasting menu, if holiday
-            //TODO: Perhaps, condition ERROR_HOLIDAY_DAY is redundant, check it
-            if (lunchInfo.equals(Constants.INFO_HOLIDAY_DAY)
-                    || lunchInfo.equals(Constants.ERROR_HOLIDAY_DAY)) {
+            if (lunchInfo.equals(Constants.INFO_HOLIDAY_DAY)) {
                 logger.log(Level.SEVERE, "Don't broadcasting menu, because holiday");
                 return;
             }

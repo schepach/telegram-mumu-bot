@@ -1,6 +1,6 @@
 package ru.mumu.bot.schedulers;
 
-import ru.mumu.bot.connection.Connection;
+import ru.mumu.bot.cache.Caching;
 import ru.mumu.bot.constants.Constants;
 
 import java.util.TimerTask;
@@ -17,18 +17,16 @@ public class CachingScheduler extends TimerTask {
         logger.log(Level.SEVERE, "From CachingScheduler...");
 
         try {
-            Connection.URL_MAP.clear();
-            String caching = Connection.cachingUrls(Constants.MUMU_MAIN_PAGE_URL);
+            Caching.URL_MAP.clear();
+            boolean idCached = Caching.cachingUrls(Constants.MUMU_MAIN_PAGE_URL);
 
-            if (caching.equals(Constants.UNEXPECTED_ERROR)) {
+            if (!idCached) {
                 logger.log(Level.SEVERE, "Don't caching, because unexpected error");
                 return;
             }
 
-            Connection.URL_MAP.put("done", "true");
-            if (!caching.isEmpty() && caching.equals("caching")) {
-                logger.log(Level.SEVERE, "Caching done...");
-            }
+            Caching.URL_MAP.put("done", "true");
+            logger.log(Level.SEVERE, "Caching done...");
 
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Exception: ", ex);
