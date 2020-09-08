@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 public class CafeMumuEntity extends AbstractCafe {
 
     private final Logger LOGGER = Logger.getLogger(this.getClass().getSimpleName());
-    private static final Pattern PATTERN_MENU = Pattern.compile("^([а-яА-я]*\\s?-?([а-яА-я]*)?,?){1,}(\\([а-яА-Я]*(,\\s?[а-яА-Я]*){1,}\\))?,?\\s?([а-яА-я]*\\s?-?([а-яА-я]*)?,?){1,}\\.");
+    private static final Pattern PATTERN_MENU = Pattern.compile("([а-яА-я]*\\s?-?([а-яА-я]*)?,?){1,}(\\([а-яА-Я]*(,\\s?[а-яА-Я]*){1,}\\))?,?\\s?([а-яА-я]*\\s?-?([а-яА-я]*)?,?){1,}");
     private static final Pattern PATTERN_MENU_REPLACE = Pattern.compile("(\\([а-яА-Я]*(,\\s?[а-яА-Я]*){1,}\\))");
     private final String command;
 
@@ -182,8 +182,9 @@ public class CafeMumuEntity extends AbstractCafe {
                     // Get Menu Items
                     if (element.attr("class").equals("info-item js-compositions")) {
                         LOGGER.log(Level.INFO, "element.text() = " + element.text());
+                        String temp = element.text().replaceAll("\"", "");
                         String menu = null;
-                        Matcher matcher = PATTERN_MENU.matcher(element.text());
+                        Matcher matcher = PATTERN_MENU.matcher(temp);
                         // Find substring on pattern
                         if (matcher.find()) {
                             menu = matcher.group();
