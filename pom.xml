@@ -7,7 +7,7 @@
     <groupId>ru.bot.welp</groupId>
     <artifactId>mumubot</artifactId>
     <packaging>pom</packaging>
-    <version>4.0.0</version>
+    <version>4.0.1</version>
     <modules>
         <module>mumubot-ear</module>
         <module>mumubot-war</module>
