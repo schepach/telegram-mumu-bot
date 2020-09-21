@@ -16,17 +16,18 @@ public class Constants {
     public static final String VICTORIA = "/victoria";
 
     public static final String HELP_TEXT =
-            "I have next commands:\n" +
-                    "/today\n" +
-                    "/monday\n" +
-                    "/tuesday\n" +
-                    "/wednesday\n" +
-                    "/thursday\n" +
-                    "/friday\n" +
-                    "/addresses\n" +
-                    "/victoria\n" +
-                    "/help\n" +
-                    "Command '/victoria' for lunch in Grand Victoria cafe \uD83D\uDE0A";
+            "I have next commands: \n" +
+                    "/today - меню на сегодня\n" +
+                    "/monday - понедельник\n" +
+                    "/tuesday - вторник\n" +
+                    "/wednesday - среда\n" +
+                    "/thursday - четверг\n" +
+                    "/friday - пятница\n" +
+                    "/addresses - адреса кафе му-му\n" +
+                    "/victoria - кафе \"Виктория\"\n" +
+                    "/help - помощь\n" +
+                    "Command '/victoria' for lunch in Grand Victoria cafe \uD83D\uDE0A \n" +
+                    "Feedback(Обратная связь): @schepach";
 
     public static final String TIME_LUNCH = "Время обеда: 12:00-16:00";
     public static final String ERROR_OTHER_INPUT = "bad command! \n If I can help you - enter /help";
@@ -35,7 +36,7 @@ public class Constants {
     public static final String UNEXPECTED_ERROR = "\uD83D\uDE31Что-то пошло не так, попробуйте повторить попытку позднее";
     public static final String ADDRESSES_TEXT = "cafe Mumu address: \n";
     public static final String CAFE_MUMU_TEXT = "in Mumu cafe for you: \n\n";
-    public static final String START_TEXT = "if you want eat - enter command. \n If I can help you - enter /help";
+    public static final String START_TEXT = "if you want to eat - enter the command. \n If I can help you - enter /help";
     public static final String VICTORIA_TEXT = "in Grand Victoria cafe for you: \n\n";
 
     public static final String VICTORIA_URL = "http://restaurantgrandvictoria.ru/lunch";

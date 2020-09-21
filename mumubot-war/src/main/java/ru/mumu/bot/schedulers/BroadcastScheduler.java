@@ -66,6 +66,11 @@ public class BroadcastScheduler extends TimerTask {
                 return;
             }
 
+            if (lunchInfo.equals(Constants.UNEXPECTED_ERROR)) {
+                logger.log(Level.SEVERE, "Don't broadcasting menu, because UNEXPECTED_ERROR");
+                return;
+            }
+
             // Don't broadcasting menu, if holiday
             if (lunchInfo.equals(Constants.INFO_HOLIDAY_DAY)) {
                 logger.log(Level.SEVERE, "Don't broadcasting menu, because holiday");
