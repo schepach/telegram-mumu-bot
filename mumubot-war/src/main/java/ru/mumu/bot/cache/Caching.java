@@ -49,7 +49,7 @@ public class Caching {
             elements = doc.select("div");
 
             for (Element item : elements) {
-                if (!item.attr("class").equals("food-item spec-block product-labels-wrapper")) {
+                if (!item.attr("class").trim().equals("food-item spec-block product-labels-wrapper")) {
                     continue;
                 }
                 url = item.select("a").attr("abs:href");

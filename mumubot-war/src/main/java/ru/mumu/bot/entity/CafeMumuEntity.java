@@ -134,6 +134,13 @@ public class CafeMumuEntity extends AbstractCafe {
 
     private String getLunches(List<String> urls) {
 
+        // Если отсутствует url для текущего дня недели, то ланчей на текущий день нет
+        // Возможно, потому что праздник или выходной день
+        // UPD от 26.10.2020 - Теперь на сайте доступно меню только на текущий день
+        if (urls == null || urls.isEmpty()) {
+            return "На этот день меню неизвестно";
+        }
+
         String price = null;
         String caption = null;
         StringBuilder stringBuilder = new StringBuilder();
@@ -142,12 +149,6 @@ public class CafeMumuEntity extends AbstractCafe {
         stringBuilder.append(Constants.TIME_LUNCH.concat("\n").concat("\uD83E\uDD57\uD83C\uDF72\uD83C\uDF5D\uD83E\uDD64"));
 
         try {
-
-            //Если отсутствует url для текущего дня недели, то ланчей на текущий день нет
-            // Возможно, потому что праздник или выходной день
-            if (urls == null || urls.isEmpty()) {
-                return Constants.INFO_HOLIDAY_DAY;
-            }
 
             for (String keyOfMap : urls) {
 
