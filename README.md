@@ -1,21 +1,19 @@
-# TelegramMumuBot
+# Telegram lunchmumubot
 
----About bot---
+About bot
 =====================
-This is Telegram bot for cafe [mumu](http://cafemumu.ru). <br/>
-It shows list lunch in mumu cafe for you.
+This is unofficial Telegram bot for cafe [mumu](https://www.cafemumu.ru). <br/>
+This bot shows lunches in cafe on weekdays by command.
+By the way! Bot is broadcasting info about lunches to current day from 11am to 12am.
 
-And bonus - It shows list lunch in [Grand Victoria cafe] (http://restaurantgrandvictoria.ru/) for you.
+And bonus - this bot shows lunches in [Grand Victoria cafe](http://restaurantgrandvictoria.ru).
 
-Search him in Telegram: [@lunchmumubot](https://telegram.me/lunchmumubot)
+Search it in Telegram: [@lunchmumubot](https://telegram.me/lunchmumubot)
 
----Instructions for use bot---
+Instruction for build and deploy
 =====================
-
- **If you want run this telegram bot :**
-
 1. Download or clone [repository](https://github.com/schepach/TelegramMumuBot.git)
-2. Set your botname and token in `MumuBot.java`
-3. Build with `maven`
-4. Go to the `target` folder and deploy .ear file to the wildfly application server
+2. Set your botName and botToken in `MumuBot.java` class
+3. Build project with `maven` (`mvn clean package`)
+4. Go to the `target` folder and deploy `.ear` file. (For example, on Wildfly Application Server)
 5. Enjoy!
