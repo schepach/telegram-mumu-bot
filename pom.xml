@@ -10,7 +10,7 @@
     <version>4.1.0</version>
     <modules>
         <module>mumubot-ear</module>
-        <module>mumubot-war</module>
+        <module>mumubot-ejb</module>
     </modules>
 
 </project>

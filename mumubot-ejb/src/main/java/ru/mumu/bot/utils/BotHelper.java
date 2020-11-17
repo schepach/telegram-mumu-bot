@@ -4,11 +4,15 @@ import ru.mumu.bot.constants.Constants;
 import ru.mumu.bot.entity.CafeMumuEntity;
 import ru.mumu.bot.entity.CafeVictoriaEntity;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 public class BotHelper {
 
-    public static String getInfo(String command, String messageDay, String currentDay) {
+    public static String getInfo(String command) {
 
-        String info = checkCommand(command, messageDay, currentDay);
+        String info = checkCommand(command);
 
         if (info == null)
             return Constants.UNEXPECTED_ERROR;
@@ -16,7 +20,7 @@ public class BotHelper {
         return info;
     }
 
-    private static String checkCommand(String command, String messageDay, String currentDay) {
+    private static String checkCommand(String command) {
 
         switch (command) {
             case Constants.HELP:
@@ -34,14 +38,16 @@ public class BotHelper {
             case Constants.ADDRESSES:
                 return new CafeMumuEntity().getAddresses();
             case Constants.TODAY:
-                return new CafeMumuEntity(Utils.checkCommandToday(currentDay, messageDay)).getMenu();
+                Calendar calendar = Calendar.getInstance();
+                String today = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(calendar.getTime());
+                return new CafeMumuEntity("/".concat(today.toLowerCase())).getMenu();
             default:
                 return Constants.ERROR_OTHER_INPUT;
         }
     }
 
     public static String checkDayForHoliday(String command, String today) {
-        if (today.equals("Saturday") || today.equals("Sunday")) {
+        if (today.toLowerCase().equals("saturday") || today.toLowerCase().equals("sunday")) {
             switch (command) {
                 case Constants.MONDAY:
                 case Constants.TUESDAY:

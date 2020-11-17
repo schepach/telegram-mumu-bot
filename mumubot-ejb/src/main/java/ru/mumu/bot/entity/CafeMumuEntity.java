@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 public class CafeMumuEntity extends AbstractCafe {
 
-    private final Logger LOGGER = Logger.getLogger(this.getClass().getSimpleName());
+    private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
     private static final Pattern PATTERN_MENU = Pattern.compile("([а-яА-я]*\\s?-?([а-яА-я]*)?,?){1,}(\\([а-яА-Я]*(,\\s?[а-яА-Я]*){1,}\\))?,?\\s?([а-яА-я]*\\s?-?([а-яА-я]*)?,?){1,}");
     private static final Pattern PATTERN_MENU_REPLACE = Pattern.compile("(\\([а-яА-Я]*(,\\s?[а-яА-Я]*){1,}\\))");
     private final String command;
@@ -39,7 +39,7 @@ public class CafeMumuEntity extends AbstractCafe {
                 || Caching.URL_MAP.isEmpty()
                 || Caching.URL_MAP.get("done") == null
                 || Caching.URL_MAP.get("done").isEmpty()) {
-            LOGGER.log(Level.SEVERE, "Caching in progress...");
+            logger.log(Level.SEVERE, "Caching in progress...");
             return Constants.CACHING_MESSAGE_FOR_USER;
         }
         // Получаем список url'ов с меню
@@ -94,7 +94,7 @@ public class CafeMumuEntity extends AbstractCafe {
                 }
             }
         } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Exception: ", ex);
+            logger.log(Level.SEVERE, "Exception: ", ex);
             return Constants.UNEXPECTED_ERROR;
         }
 
@@ -125,7 +125,7 @@ public class CafeMumuEntity extends AbstractCafe {
             }
 
         } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Exception from getUrlList method: ", ex);
+            logger.log(Level.SEVERE, "Exception from getUrlList method: ", ex);
             return null;
         }
 
@@ -165,8 +165,8 @@ public class CafeMumuEntity extends AbstractCafe {
                                     && !element.select("h1").isEmpty()) {
                                 caption = element.select("h1").first().text();
                                 countLunchItem++;
-                                LOGGER.log(Level.INFO, "caption = " + caption);
-                                LOGGER.log(Level.INFO, "countLunchItem = " + countLunchItem);
+                                logger.log(Level.INFO, "caption = " + caption);
+                                logger.log(Level.INFO, "countLunchItem = " + countLunchItem);
                             }
                         }
                     }
@@ -175,14 +175,14 @@ public class CafeMumuEntity extends AbstractCafe {
                     if (price == null || price.isEmpty()) {
                         if (element.attr("class").equals("price")) {
                             price = element.text().substring(0, 3);
-                            LOGGER.log(Level.INFO, "price = " + price);
+                            logger.log(Level.INFO, "price = " + price);
                             stringBuilder.insert(0, "Стоимость обеда: ".concat(price).concat(" руб.\n"));
                         }
                     }
 
                     // Get Menu Items
                     if (element.attr("class").equals("info-item js-compositions")) {
-                        LOGGER.log(Level.INFO, "element.text() = " + element.text());
+                        logger.log(Level.INFO, "element.text() = " + element.text());
                         String temp = element.text().replaceAll("\"", "");
                         String menu = null;
                         Matcher matcher = PATTERN_MENU.matcher(temp);
@@ -190,10 +190,10 @@ public class CafeMumuEntity extends AbstractCafe {
                         if (matcher.find()) {
                             menu = matcher.group();
                         }
-                        LOGGER.log(Level.INFO, "menu = " + menu);
+                        logger.log(Level.INFO, "menu = " + menu);
 
                         if (menu == null || menu.isEmpty()) {
-                            LOGGER.log(Level.SEVERE, "menu is null or is empty!");
+                            logger.log(Level.SEVERE, "menu is null or is empty!");
                             return Constants.UNEXPECTED_ERROR;
                         }
                         // Replace elements from menu, which match of pattern and point by empty
@@ -204,7 +204,7 @@ public class CafeMumuEntity extends AbstractCafe {
                         stringBuilder.append("\n").append(caption).append(": \n");
                         int count = 1;
                         for (String item : menuItems) {
-                            LOGGER.log(Level.INFO, "menuItem = " + item);
+                            logger.log(Level.INFO, "menuItem = " + item);
                             stringBuilder.append(count).append(". ").append(item.trim().concat("\n"));
                             count++;
                         }
@@ -212,9 +212,9 @@ public class CafeMumuEntity extends AbstractCafe {
                     }
                 }
             }
-            LOGGER.log(Level.INFO, "LUNCH_MUMU: \n" + stringBuilder.toString());
+            logger.log(Level.INFO, "LUNCH_MUMU: \n" + stringBuilder.toString());
         } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Exception: ", ex);
+            logger.log(Level.SEVERE, "Exception: ", ex);
             return Constants.UNEXPECTED_ERROR;
         }
 

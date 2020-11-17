@@ -3,18 +3,18 @@ package ru.mumu.bot.schedulers;
 import ru.mumu.bot.cache.Caching;
 import ru.mumu.bot.constants.Constants;
 
-import java.util.TimerTask;
+import javax.ejb.Singleton;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CachingScheduler extends TimerTask {
+@Singleton
+public class CachingScheduler {
 
     private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
-    @Override
     public void run() {
 
-        logger.log(Level.SEVERE, "From CachingScheduler...");
+        logger.log(Level.SEVERE, "Start caching info about menu...");
 
         try {
             Caching.URL_MAP.clear();

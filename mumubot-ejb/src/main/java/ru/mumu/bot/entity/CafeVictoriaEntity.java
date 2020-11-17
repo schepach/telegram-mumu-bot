@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 public class CafeVictoriaEntity extends AbstractCafe {
 
-    private static final Logger LOGGER = Logger.getLogger(CafeVictoriaEntity.class.getSimpleName());
+    private static final Logger logger = Logger.getLogger(CafeVictoriaEntity.class.getSimpleName());
     private static final Pattern PATTERN_DATE = Pattern.compile("\\d\\d/\\d\\d/\\d\\d\\d\\d");
 
     @Override
@@ -72,11 +72,11 @@ public class CafeVictoriaEntity extends AbstractCafe {
                 count++;
             }
 
-            LOGGER.log(Level.INFO, "Date: " + date);
-            LOGGER.log(Level.INFO, "LUNCH_VICTORIA: \n" + stringBuilder.toString());
+            logger.log(Level.INFO, "Date: " + date);
+            logger.log(Level.INFO, "LUNCH_VICTORIA: \n" + stringBuilder.toString());
 
         } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Exception: ", ex);
+            logger.log(Level.SEVERE, "Exception: ", ex);
             return Constants.UNEXPECTED_ERROR;
         }
         return stringBuilder.toString();

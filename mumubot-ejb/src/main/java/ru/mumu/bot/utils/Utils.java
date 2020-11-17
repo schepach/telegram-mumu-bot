@@ -63,25 +63,4 @@ public class Utils {
         return textForUser;
     }
 
-    public static String checkCommandToday(String currentDay, String messageDay) {
-
-        LOGGER.log(Level.INFO, "currentDay:  " + currentDay);
-        LOGGER.log(Level.INFO, "messageDay:  " + messageDay);
-
-        if (currentDay == null || currentDay.isEmpty()
-                || messageDay == null || messageDay.isEmpty()) {
-            LOGGER.log(Level.SEVERE, "currentDay or messageDay is null or is empty");
-            return null;
-        }
-
-        if (!currentDay.equals(messageDay)) {
-            LOGGER.log(Level.SEVERE, "Days are not equals");
-            return null;
-        }
-
-        String weekDay = "/".concat(currentDay).toLowerCase();
-        LOGGER.log(Level.INFO, "WeekDay is : " + weekDay);
-        return weekDay;
-    }
-
 }

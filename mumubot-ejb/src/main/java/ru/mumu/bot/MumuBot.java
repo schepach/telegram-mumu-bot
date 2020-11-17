@@ -10,9 +10,7 @@ import ru.mumu.bot.redis.RedisManager;
 import ru.mumu.bot.utils.BotHelper;
 import ru.mumu.bot.utils.Utils;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,13 +23,8 @@ public class MumuBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
 
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-
-        String today = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(calendar.getTime());
-        LOGGER.log(Level.INFO, "Today is " + today);
+        String dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+        LOGGER.log(Level.INFO, "Today is " + dayOfWeek);
 
         Message message = update.getMessage();
 
@@ -39,29 +32,24 @@ public class MumuBot extends TelegramLongPollingBot {
 
             RedisManager.checkRedisStore(String.valueOf(message.getChatId()));
 
+            LOGGER.log(Level.INFO, "FirstName: {0}, LastName: {1}, UserName: {2} \n" +
+                            "UserId: {3}, ChatId: {4}, CommandInput: {5}",
+                    new Object[]{message.getFrom().getFirstName(),
+                            message.getFrom().getLastName(),
+                            message.getFrom().getUserName(),
+                            message.getFrom().getId(),
+                            message.getChatId(),
+                            message.getText()});
+
             //If user wants to get menu in holiday or weekend, he will get message, that menu is only from Monday to Friday
             // Besides commands: ADDRESSES, HELP and START
-            String holidayInfo = BotHelper.checkDayForHoliday(message.getText(), today);
+            String holidayInfo = BotHelper.checkDayForHoliday(message.getText(), dayOfWeek);
             if (holidayInfo != null) {
                 sendMessage(message, holidayInfo);
                 return;
             }
 
-            String currentDay = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(calendar.getTime());
-            Date messageDate = new Date((long) message.getDate() * 1000);
-            String messageDay = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(messageDate.getTime());
-            calendar.add(Calendar.DAY_OF_MONTH, 0);
-            Date currentDate = calendar.getTime();
-
-            LOGGER.log(Level.INFO, "FirstName: " + message.getFrom().getFirstName());
-            LOGGER.log(Level.INFO, "LastName: " + message.getFrom().getLastName());
-            LOGGER.log(Level.INFO, "UserName: " + message.getFrom().getUserName());
-            LOGGER.log(Level.INFO, "UserId: " + message.getFrom().getId());
-            LOGGER.log(Level.INFO, "ChatId: " + message.getChatId());
-            LOGGER.log(Level.INFO, "CommandInput: " + message.getText());
-            LOGGER.log(Level.INFO, "Current Date: " + currentDate);
-
-            String info = BotHelper.getInfo(message.getText(), messageDay, currentDay);
+            String info = BotHelper.getInfo(message.getText());
             sendMessage(message, info);
         }
     }

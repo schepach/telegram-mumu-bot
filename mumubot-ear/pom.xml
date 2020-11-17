@@ -41,9 +41,9 @@
     <dependencies>
         <dependency>
             <groupId>ru.bot.welp</groupId>
-            <artifactId>mumubot-war</artifactId>
+            <artifactId>mumubot-ejb</artifactId>
             <version>${project.version}</version>
-            <type>war</type>
+            <type>ejb</type>
         </dependency>
     </dependencies>
 
