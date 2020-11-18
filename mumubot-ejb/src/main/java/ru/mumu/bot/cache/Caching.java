@@ -3,6 +3,7 @@ package ru.mumu.bot.cache;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 import ru.mumu.bot.constants.Constants;
 import ru.mumu.bot.utils.Utils;
@@ -43,8 +44,11 @@ public class Caching {
             elements = doc.select("div.menu-container-text > div.food-item-title.lunch-item-title");
             for (Element item : elements) {
                 lunchUrl = item.select("a").attr("abs:href");
-                logger.log(Level.INFO, "lunchUrl = " + lunchUrl);
-                URL_MAP.put(lunchUrl, Jsoup.connect(url).get().html());
+                logger.log(Level.INFO, "lunchUrl - {0}", lunchUrl);
+                // Connect to url and remove comments for perfect parsing
+                doc = Jsoup.connect(lunchUrl).get();
+                removeComments(doc);
+                URL_MAP.put(lunchUrl, doc.html());
             }
 
             if (URL_MAP == null || URL_MAP.isEmpty()) {
@@ -65,5 +69,17 @@ public class Caching {
         }
 
         return true;
+    }
+
+    private static void removeComments(Node node) {
+        for (int i = 0; i < node.childNodeSize(); ) {
+            Node child = node.childNode(i);
+            if (child.nodeName().equals("#comment"))
+                child.remove();
+            else {
+                removeComments(child);
+                i++;
+            }
+        }
     }
 }

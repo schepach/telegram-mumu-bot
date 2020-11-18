@@ -45,7 +45,8 @@ public class CafeMumuEntity extends AbstractCafe {
         // Получаем список url'ов с меню
         List<String> urlList = getUrlList(command);
 
-        if (urlList == null) {
+        if (urlList == null || urlList.isEmpty()) {
+            logger.log(Level.SEVERE, "urls is null or is empty!");
             return Constants.UNEXPECTED_ERROR;
         }
 
@@ -104,26 +105,19 @@ public class CafeMumuEntity extends AbstractCafe {
     private List<String> getUrlList(String command) {
 
         List<String> urlList = new ArrayList<>();
+
         try {
-
             for (Map.Entry<String, String> entry : Caching.URL_MAP.entrySet()) {
-
-                Document doc = Jsoup.parse(entry.getValue());
-                Elements elements = doc.select("h1");
-
-                for (Element item : elements) {
-                    if (item.text().contains("понедельник") && command.equals(Constants.MONDAY)
-                            || (item.text().contains("вторник") && command.equals(Constants.TUESDAY))
-                            || (item.text().contains("среда") && command.equals(Constants.WEDNESDAY))
-                            || (item.text().contains("четверг") && command.equals(Constants.THURSDAY))
-                            || (item.text().contains("пятница") && command.equals(Constants.FRIDAY))) {
-
-                        urlList.add(entry.getKey());
-                        break;
-                    }
+                logger.log(Level.INFO, "check url - {0}", entry.getKey());
+                if (entry.getKey().contains("ponedelnik") && command.equals(Constants.MONDAY)
+                        || (entry.getKey().contains("vtornik") && command.equals(Constants.TUESDAY))
+                        || (entry.getKey().contains("sreda") && command.equals(Constants.WEDNESDAY))
+                        || (entry.getKey().contains("chetverg") && command.equals(Constants.THURSDAY))
+                        || (entry.getKey().contains("pyatnitsa") && command.equals(Constants.FRIDAY))) {
+                    logger.log(Level.INFO, "url {0} is OK, add to list...", entry.getKey());
+                    urlList.add(entry.getKey());
                 }
             }
-
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Exception from getUrlList method: ", ex);
             return null;
@@ -133,94 +127,70 @@ public class CafeMumuEntity extends AbstractCafe {
     }
 
     private String getLunches(List<String> urls) {
-
-        // Если отсутствует url для текущего дня недели, то ланчей на текущий день нет
-        // Возможно, потому что праздник или выходной день
-        // UPD от 26.10.2020 - Теперь на сайте доступно меню только на текущий день
-        if (urls == null || urls.isEmpty()) {
-            return "На этот день меню неизвестно";
-        }
-
         String price = null;
         String caption = null;
         StringBuilder stringBuilder = new StringBuilder();
-        int countLunchItem = 0;
-
         stringBuilder.append(Constants.TIME_LUNCH.concat("\n").concat("\uD83E\uDD57\uD83C\uDF72\uD83C\uDF5D\uD83E\uDD64"));
 
         try {
+            for (String urlWithMenu : urls) {
+                logger.log(Level.INFO, "url with menu - {0}", urlWithMenu);
 
-            for (String keyOfMap : urls) {
+                String menu = null;
+                Document doc = Jsoup.parse(Caching.URL_MAP.get(urlWithMenu));
+                Elements elements = doc.select("body div.wrap-main.test div div.content div.food-container");
+                logger.log(Level.INFO, "elements - {0}", elements);
 
-                String value = Caching.URL_MAP.get(keyOfMap);
-                Document doc = Jsoup.parse(value);
-                Elements elements = doc.select("div");
-
-                for (Element element : elements) {
-
+                for (Element item : elements) {
+                    // Get menu
+                    menu = item.getElementsByAttributeValue("class", "info-item js-compositions").text();
+                    logger.log(Level.INFO, "menu - {0}", menu);
                     // Get caption
-                    if (countLunchItem <= 1) {
-                        if (element.attr("class").equals("food-container")) {
-                            if (element.select("h1") != null
-                                    && !element.select("h1").isEmpty()) {
-                                caption = element.select("h1").first().text();
-                                countLunchItem++;
-                                logger.log(Level.INFO, "caption = " + caption);
-                                logger.log(Level.INFO, "countLunchItem = " + countLunchItem);
-                            }
-                        }
-                    }
+                    caption = item.select("h1").text();
+                    logger.log(Level.INFO, "caption - {0}", caption);
+                    // Get price
+                    price = item.select("div div.food-el-price-block div.price-block").text();
+                    logger.log(Level.INFO, "price - {0}", price);
+                }
 
-                    // Get Price
-                    if (price == null || price.isEmpty()) {
-                        if (element.attr("class").equals("price")) {
-                            price = element.text().substring(0, 3);
-                            logger.log(Level.INFO, "price = " + price);
-                            stringBuilder.insert(0, "Стоимость обеда: ".concat(price).concat(" руб.\n"));
-                        }
-                    }
+                if (menu == null || menu.isEmpty()) {
+                    logger.log(Level.SEVERE, "menu is null or is empty!");
+                    return Constants.UNEXPECTED_ERROR;
+                }
 
-                    // Get Menu Items
-                    if (element.attr("class").equals("info-item js-compositions")) {
-                        logger.log(Level.INFO, "element.text() = " + element.text());
-                        String temp = element.text().replaceAll("\"", "");
-                        String menu = null;
-                        Matcher matcher = PATTERN_MENU.matcher(temp);
-                        // Find substring on pattern
-                        if (matcher.find()) {
-                            menu = matcher.group();
-                        }
-                        logger.log(Level.INFO, "menu = " + menu);
+                String splitMenu = null;
+                Matcher matcher = PATTERN_MENU.matcher(menu.replaceAll("\"", ""));
+                // Find substring by pattern
+                if (matcher.find()) {
+                    splitMenu = matcher.group();
+                }
+                logger.log(Level.INFO, "splitMenu: {0}", splitMenu);
 
-                        if (menu == null || menu.isEmpty()) {
-                            logger.log(Level.SEVERE, "menu is null or is empty!");
-                            return Constants.UNEXPECTED_ERROR;
-                        }
-                        // Replace elements from menu, which match of pattern and point by empty
-                        menu = menu.replaceAll(PATTERN_MENU_REPLACE.pattern(), "").replaceAll("\\.", "");
+                if (splitMenu == null || splitMenu.isEmpty()) {
+                    logger.log(Level.SEVERE, "splitMenu is null or is empty!");
+                    return Constants.UNEXPECTED_ERROR;
+                }
 
-                        String[] menuItems = menu.split(",");
+                // Replace elements from splitMenu, which match of pattern and point by empty
+                splitMenu = splitMenu.replaceAll(PATTERN_MENU_REPLACE.pattern(), "").replaceAll("\\.", "");
 
-                        stringBuilder.append("\n").append(caption).append(": \n");
-                        int count = 1;
-                        for (String item : menuItems) {
-                            logger.log(Level.INFO, "menuItem = " + item);
-                            stringBuilder.append(count).append(". ").append(item.trim().concat("\n"));
-                            count++;
-                        }
-                        break;
-                    }
+                String[] menuItems = splitMenu.split(",");
+
+                stringBuilder.append("\n").append(caption).append(": \n");
+                int count = 1;
+                for (String item : menuItems) {
+                    logger.log(Level.INFO, "menuItem - {0}", item);
+                    stringBuilder.append(count).append(". ").append(item.trim().concat("\n"));
+                    count++;
                 }
             }
-            logger.log(Level.INFO, "LUNCH_MUMU: \n" + stringBuilder.toString());
+            stringBuilder.insert(0, "Стоимость обеда: ".concat(price != null ? price : "").concat("\n"));
+
+            logger.log(Level.INFO, "Final menu is: {0}\n", stringBuilder.toString());
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Exception: ", ex);
             return Constants.UNEXPECTED_ERROR;
         }
-
-        // Перестраховка, если есть url с ланчем, но в нем нет информации по меню
-        if (stringBuilder.toString().isEmpty())
-            return Constants.INFO_HOLIDAY_DAY;
 
         return stringBuilder.toString();
     }

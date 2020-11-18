@@ -52,7 +52,7 @@ public class BotStarter {
     }
 
     @Schedule(dayOfWeek = "Mon-Fri", hour = "11", minute = "5")
-    public void broadcast() {
+    public void broadcastingMenu() {
         broadcastScheduler.run();
     }
 
