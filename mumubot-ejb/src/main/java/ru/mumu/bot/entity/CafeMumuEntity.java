@@ -186,7 +186,7 @@ public class CafeMumuEntity extends AbstractCafe {
             }
             stringBuilder.insert(0, "Стоимость обеда: ".concat(price != null ? price : "").concat("\n"));
 
-            logger.log(Level.INFO, "Final menu is: {0}\n", stringBuilder.toString());
+            logger.log(Level.INFO, "Final menu in mumu: {0}\n", stringBuilder.toString());
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Exception: ", ex);
             return Constants.UNEXPECTED_ERROR;

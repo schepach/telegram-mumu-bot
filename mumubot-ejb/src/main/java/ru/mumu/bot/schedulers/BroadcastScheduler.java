@@ -33,7 +33,7 @@ public class BroadcastScheduler {
 
             Calendar cal = Calendar.getInstance();
             String dayOfWeek = cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
-            logger.log(Level.SEVERE, "Today is " + dayOfWeek);
+            logger.log(Level.SEVERE, "Today is {0}", dayOfWeek);
 
             String lunchInfo = BotHelper.getInfo("/".concat(dayOfWeek.toLowerCase()));
 

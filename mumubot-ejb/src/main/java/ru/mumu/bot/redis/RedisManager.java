@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 public class RedisManager {
 
-    private static final Logger LOGGER = Logger.getLogger(RedisManager.class.getSimpleName());
+    private static final Logger logger = Logger.getLogger(RedisManager.class.getSimpleName());
     public static final Jedis REDIS_STORE = new Jedis("localhost", 6379);
 
     public static void checkRedisStore(String chatId) {
@@ -18,7 +18,7 @@ public class RedisManager {
         boolean isContains = false;
 
         if (redisList == null || redisList.isEmpty()) {
-            LOGGER.log(Level.INFO, "Redis list MUMU_CHATID is empty, put first element");
+            logger.log(Level.INFO, "Redis list MUMU_CHATID is empty, put first element");
             REDIS_STORE.rpush("MUMU_CHATID", chatId);
             return;
         }
@@ -31,10 +31,10 @@ public class RedisManager {
         }
 
         if (!isContains) {
-            LOGGER.log(Level.INFO, "chatId = " + chatId + " does not exist in redis...put it");
+            logger.log(Level.INFO, "chatId - {0} does not exist in redis, put it", chatId);
             REDIS_STORE.rpush("MUMU_CHATID", chatId);
         } else {
-            LOGGER.log(Level.INFO, "chatId = " + chatId + " already exist in redis...go on");
+            logger.log(Level.INFO, "chatId - {0} already exist in redis, go on...", chatId);
         }
     }
 

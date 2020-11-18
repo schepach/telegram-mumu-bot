@@ -72,8 +72,8 @@ public class CafeVictoriaEntity extends AbstractCafe {
                 count++;
             }
 
-            logger.log(Level.INFO, "Date: " + date);
-            logger.log(Level.INFO, "LUNCH_VICTORIA: \n" + stringBuilder.toString());
+            logger.log(Level.INFO, "Date - {0} ", date);
+            logger.log(Level.INFO, "Final menu in Victoria: {0}\n", stringBuilder.toString());
 
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Exception: ", ex);

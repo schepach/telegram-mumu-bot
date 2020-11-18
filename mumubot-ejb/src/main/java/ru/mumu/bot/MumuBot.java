@@ -17,14 +17,14 @@ import java.util.logging.Logger;
 
 public class MumuBot extends TelegramLongPollingBot {
 
-    private static final Logger LOGGER = Logger.getLogger(MumuBot.class.getSimpleName());
+    private static final Logger logger = Logger.getLogger(MumuBot.class.getSimpleName());
 
     @Override
     public void onUpdateReceived(Update update) {
 
         Calendar calendar = Calendar.getInstance();
         String dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
-        LOGGER.log(Level.INFO, "Today is " + dayOfWeek);
+        logger.log(Level.INFO, "Today is {0}", dayOfWeek);
 
         Message message = update.getMessage();
 
@@ -32,7 +32,7 @@ public class MumuBot extends TelegramLongPollingBot {
 
             RedisManager.checkRedisStore(String.valueOf(message.getChatId()));
 
-            LOGGER.log(Level.INFO, "FirstName: {0}, LastName: {1}, UserName: {2} \n" +
+            logger.log(Level.INFO, "FirstName: {0}, LastName: {1}, UserName: {2} \n" +
                             "UserId: {3}, ChatId: {4}, CommandInput: {5}",
                     new Object[]{message.getFrom().getFirstName(),
                             message.getFrom().getLastName(),
@@ -63,7 +63,7 @@ public class MumuBot extends TelegramLongPollingBot {
         try {
             execute(sendMessage);
         } catch (TelegramApiException ex) {
-            LOGGER.log(Level.SEVERE, "TelegramApiException: ", ex);
+            logger.log(Level.SEVERE, "TelegramApiException: ", ex);
         }
     }
 

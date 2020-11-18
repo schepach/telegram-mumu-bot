@@ -13,14 +13,14 @@ import java.util.logging.Logger;
 
 public class Utils {
 
-    private static final Logger LOGGER = Logger.getLogger(Utils.class.getSimpleName());
+    private static final Logger logger = Logger.getLogger(Utils.class.getSimpleName());
 
     public static void connectToURL(String url) throws IOException {
-        LOGGER.log(Level.SEVERE, "ConnectTo: " + url);
+        logger.log(Level.SEVERE, "ConnectTo {0}", url);
         HttpClient client = HttpClientBuilder.create().build();
         HttpGet request = new HttpGet(url);
         HttpResponse response = client.execute(request);
-        LOGGER.log(Level.SEVERE, "Response Code: " + response.getStatusLine().getStatusCode());
+        logger.log(Level.SEVERE, "Response Code: {0}", response.getStatusLine().getStatusCode());
     }
 
     public static String getTextForUser(Message message, String text) {
@@ -45,7 +45,7 @@ public class Utils {
             case Constants.ERROR_OTHER_INPUT:
             case Constants.HELP_TEXT:
             case Constants.UNEXPECTED_ERROR:
-                LOGGER.log(Level.INFO, "TextForUser: " + text);
+                logger.log(Level.INFO, "TextForUser: {0}", text);
                 textForUser = userName.concat(", ").concat(text);
                 break;
             case Constants.START_TEXT:
