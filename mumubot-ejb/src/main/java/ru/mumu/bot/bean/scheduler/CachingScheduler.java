@@ -1,4 +1,4 @@
-package ru.mumu.bot.schedulers;
+package ru.mumu.bot.bean.scheduler;
 
 import ru.mumu.bot.cache.Caching;
 import ru.mumu.bot.constants.Constants;

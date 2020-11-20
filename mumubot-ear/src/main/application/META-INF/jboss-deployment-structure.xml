@@ -1,23 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jboss-deployment-structure>
-    <deployment>
-        <exclude-subsystems>
-            <subsystem name="resteasy"/>
-        </exclude-subsystems>
-
-        <exclusions>
-            <module name="org.apache.log4j" />
-        </exclusions>
-
-        <dependencies>
-            <module name="org.apache.commons.io" export="true"/>
-            <module name="org.apache.xerces" export="true"/>
-            <module name="org.jboss.remote-naming" export="true"/>
-            <module name="org.jboss.resteasy.resteasy-multipart-provider" export="true"/>
-            <module name="org.jboss.resteasy.resteasy-jaxrs" export="true"/>
-            <!--<module name="org.hornetq" export="true"/>-->
-            <module name="org.apache.log4j"/>
-        </dependencies>
-
-    </deployment>
-</jboss-deployment-structure>
+<jboss-deployment-structure/>

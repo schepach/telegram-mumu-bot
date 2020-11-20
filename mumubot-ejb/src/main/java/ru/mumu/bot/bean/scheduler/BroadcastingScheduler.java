@@ -1,4 +1,4 @@
-package ru.mumu.bot.schedulers;
+package ru.mumu.bot.bean.scheduler;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Singleton
-public class BroadcastScheduler {
+public class BroadcastingScheduler {
 
     private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 

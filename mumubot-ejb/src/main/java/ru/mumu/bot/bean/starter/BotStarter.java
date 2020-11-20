@@ -1,11 +1,11 @@
-package ru.mumu.bot.listener;
+package ru.mumu.bot.bean.starter;
 
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.generics.BotSession;
 import ru.mumu.bot.MumuBot;
-import ru.mumu.bot.schedulers.BroadcastScheduler;
-import ru.mumu.bot.schedulers.CachingScheduler;
+import ru.mumu.bot.bean.scheduler.BroadcastingScheduler;
+import ru.mumu.bot.bean.scheduler.CachingScheduler;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -23,7 +23,7 @@ public class BotStarter {
     @Inject
     CachingScheduler cachingScheduler;
     @Inject
-    BroadcastScheduler broadcastScheduler;
+    BroadcastingScheduler broadcastScheduler;
 
     private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
     private BotSession botSession;
