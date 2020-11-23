@@ -22,26 +22,11 @@ public class Caching {
     public static boolean cachingUrls(String url) {
 
         try {
-            String urlWithLunches = null;
             String lunchUrl;
-            Utils.connectToURL(Constants.MUMU_MAIN_PAGE_URL);
-            Document doc = Jsoup.connect(Constants.MUMU_MAIN_PAGE_URL).get();
-
-            // Get url with all lunches
-            Elements elements = doc.select("body div.wrap-main.test div div.content div.menu-page");
-            for (Element item : elements) {
-                urlWithLunches = item.getElementsByAttributeValue("id", "bx_1847241719_245").select("a").attr("abs:href");
-            }
-
-            if (urlWithLunches == null || urlWithLunches.isEmpty()) {
-                logger.log(Level.SEVERE, "urlWithLunches is null or is empty");
-                logger.log(Level.SEVERE, "Break caching pages ...");
-                return false;
-            }
-
+            Utils.connectToURL(Constants.LUNCHES_URL);
             // Get urls with lunches
-            doc = Jsoup.connect(urlWithLunches).get();
-            elements = doc.select("div.menu-container-text > div.food-item-title.lunch-item-title");
+            Document doc = Jsoup.connect(Constants.LUNCHES_URL).get();
+            Elements elements = doc.select("div.menu-container-text > div.food-item-title.lunch-item-title");
             for (Element item : elements) {
                 lunchUrl = item.select("a").attr("abs:href");
                 logger.log(Level.INFO, "lunchUrl - {0}", lunchUrl);
