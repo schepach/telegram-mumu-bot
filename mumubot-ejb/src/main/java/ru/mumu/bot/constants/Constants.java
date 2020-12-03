@@ -1,5 +1,8 @@
 package ru.mumu.bot.constants;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Constants {
 
     public static final String HELP = "/help";
@@ -43,5 +46,16 @@ public class Constants {
     public static final String LUNCHES_URL = "https://www.cafemumu.ru/catalog/lanchi";
 
     public static final String CACHING_MESSAGE_FOR_USER = "В данный момент меню недоступно\uD83D\uDE10 Попробуйте повторить попытку позднее.";
+
+    public static List<String> getDaysOfWeek() {
+        List<String> daysOfWeek = new ArrayList<>();
+        daysOfWeek.add(Constants.MONDAY);
+        daysOfWeek.add(Constants.TUESDAY);
+        daysOfWeek.add(Constants.WEDNESDAY);
+        daysOfWeek.add(Constants.THURSDAY);
+        daysOfWeek.add(Constants.FRIDAY);
+        daysOfWeek.add(Constants.TODAY);
+        return daysOfWeek;
+    }
 
 }

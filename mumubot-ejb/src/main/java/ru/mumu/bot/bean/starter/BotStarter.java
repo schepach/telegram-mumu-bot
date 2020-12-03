@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.generics.BotSession;
 import ru.mumu.bot.MumuBot;
 import ru.mumu.bot.bean.scheduler.BroadcastingScheduler;
 import ru.mumu.bot.bean.scheduler.CachingScheduler;
+import ru.mumu.bot.db.IDBOperations;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -24,6 +25,8 @@ public class BotStarter {
     CachingScheduler cachingScheduler;
     @Inject
     BroadcastingScheduler broadcastScheduler;
+    @Inject
+    IDBOperations idbOperations;
 
     private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
     private BotSession botSession;
@@ -38,7 +41,7 @@ public class BotStarter {
         try {
             logger.log(Level.SEVERE, "OK!");
             logger.log(Level.SEVERE, "Register MumuBot....");
-            botSession = telegramBotsApi.registerBot(new MumuBot());
+            botSession = telegramBotsApi.registerBot(new MumuBot(idbOperations));
             logger.log(Level.SEVERE, "Register done!");
             logger.log(Level.SEVERE, "MumuBot was started...");
         } catch (Exception ex) {

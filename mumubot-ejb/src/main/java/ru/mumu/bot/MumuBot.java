@@ -6,10 +6,13 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.mumu.bot.constants.Constants;
+import ru.mumu.bot.db.IDBOperations;
 import ru.mumu.bot.redis.RedisManager;
 import ru.mumu.bot.utils.BotHelper;
 import ru.mumu.bot.utils.Utils;
 
+import javax.inject.Inject;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -18,6 +21,15 @@ import java.util.logging.Logger;
 public class MumuBot extends TelegramLongPollingBot {
 
     private static final Logger logger = Logger.getLogger(MumuBot.class.getSimpleName());
+    private IDBOperations idbOperations;
+
+    public MumuBot() {
+    }
+
+    @Inject
+    public MumuBot(IDBOperations idbOperations) {
+        this.idbOperations = idbOperations;
+    }
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -49,7 +61,16 @@ public class MumuBot extends TelegramLongPollingBot {
                 return;
             }
 
-            String info = BotHelper.getInfo(message.getText());
+            String info;
+            if (Constants.getDaysOfWeek().contains(message.getText())) {
+                info = idbOperations.selectDataFromDB(message.getText());
+                if (info == null) {
+                    info = Constants.CACHING_MESSAGE_FOR_USER;
+                }
+            } else {
+                info = BotHelper.getInfo(message.getText());
+            }
+
             sendMessage(message, info);
         }
     }
