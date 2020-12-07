@@ -42,7 +42,7 @@ public class Constants {
 
     public static final String VICTORIA_URL = "http://restaurantgrandvictoria.ru/lunch";
     public static final String ADDRESSES_URL = "https://vk.com/topic-39139909_28681126";
-    public static final String LUNCHES_URL = "https://www.cafemumu.ru/catalog/lanchi";
+    public static final String LUNCHES_URL = "https://www.cafemumu.ru/catalog/lanchi-tekushchey-nedeli/";
 
     public static final String CACHING_MESSAGE_FOR_USER = "В данный момент меню недоступно\uD83D\uDE10 Попробуйте повторить попытку позднее.";
 
