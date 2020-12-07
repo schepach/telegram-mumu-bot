@@ -8,4 +8,6 @@ public interface IDBOperations {
 
     void updateDataToDB(String daysOfWeek, String menu);
 
+    void deleteDataFromDB();
+
 }

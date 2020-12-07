@@ -34,14 +34,14 @@ public class CafeMumuEntity extends AbstractCafe {
     @Override
     public String getMenu() {
         String lunchInfo;
-        // Если кэширование не завершено, сообщаем пользователю, что идет обработка меню
         if (Caching.URL_MAP == null
                 || Caching.URL_MAP.isEmpty()
                 || Caching.URL_MAP.get("done") == null
                 || Caching.URL_MAP.get("done").isEmpty()) {
-            logger.log(Level.SEVERE, "Caching in progress...");
-            return Constants.CACHING_MESSAGE_FOR_USER;
+            logger.log(Level.SEVERE, "Caching was failed...");
+            return null;
         }
+
         // Получаем список url'ов с меню
         List<String> urlList = getUrlList(command);
 

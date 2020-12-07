@@ -24,9 +24,10 @@ public class CachingScheduler {
 
         try {
             Caching.URL_MAP.clear();
-            boolean idCached = Caching.cachingUrls(Constants.MUMU_MAIN_PAGE_URL);
+            idbOperations.deleteDataFromDB();
+            boolean isCached = Caching.cachingUrls();
 
-            if (!idCached) {
+            if (!isCached) {
                 logger.log(Level.SEVERE, "Don't caching, because unexpected error");
                 return;
             }
@@ -37,6 +38,9 @@ public class CachingScheduler {
             String menuInfo;
             for (String day : Constants.getDaysOfWeek()) {
                 menuInfo = BotHelper.getInfo(day);
+
+                if (menuInfo.equals(Constants.UNEXPECTED_ERROR))
+                    continue;
 
                 if (idbOperations.selectDataFromDB(day) == null) {
                     idbOperations.insertDataToDB(day, menuInfo);

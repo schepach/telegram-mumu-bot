@@ -81,6 +81,17 @@ public class DBImpl implements IDBOperations {
         }
     }
 
+    @Override
+    public void deleteDataFromDB() {
+        logger.log(Level.INFO, "Delete data ...");
+        String deleteQuery = "delete from menuItems;";
+        try (PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
+            statement.execute();
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, null, ex);
+        }
+    }
+
     @PreDestroy
     public void cleanup() {
         try {

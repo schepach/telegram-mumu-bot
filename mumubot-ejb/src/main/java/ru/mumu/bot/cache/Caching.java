@@ -19,7 +19,7 @@ public class Caching {
     public static Map<String, String> URL_MAP = new HashMap<>();
     private static int tryCount = 0;
 
-    public static boolean cachingUrls(String url) {
+    public static boolean cachingUrls() {
 
         try {
             String lunchUrl;
@@ -42,15 +42,15 @@ public class Caching {
             }
 
         } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Caching exception: ", ex);
+            URL_MAP.clear();
             tryCount++;
             if (tryCount == 4) {
-                logger.log(Level.SEVERE, "After {0} trying return false, clear map and don't caching...", tryCount);
-                URL_MAP.clear();
+                logger.log(Level.SEVERE, "After {0} trying don't caching urls...", tryCount);
                 return false;
             }
-            logger.log(Level.SEVERE, "Caching exception: ", ex);
-            logger.log(Level.SEVERE, "Caching url - {0}, try - {1}", new Object[]{url, tryCount});
-            cachingUrls(url);
+            logger.log(Level.SEVERE, "Caching urls again, trying - {0}", new Object[]{tryCount});
+            cachingUrls();
         }
 
         return true;
