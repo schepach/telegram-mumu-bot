@@ -23,6 +23,15 @@ public class Utils {
         logger.log(Level.SEVERE, "Response Code: {0}", response.getStatusLine().getStatusCode());
     }
 
+    public static int connect(String url) throws IOException {
+        logger.log(Level.SEVERE, "ConnectTo {0}", url);
+        HttpClient client = HttpClientBuilder.create().build();
+        HttpGet request = new HttpGet(url);
+        HttpResponse response = client.execute(request);
+        logger.log(Level.SEVERE, "Response Code: {0}", response.getStatusLine().getStatusCode());
+        return response.getStatusLine().getStatusCode();
+    }
+
     public static String getTextForUser(Message message, String text) {
 
         String userName = null;

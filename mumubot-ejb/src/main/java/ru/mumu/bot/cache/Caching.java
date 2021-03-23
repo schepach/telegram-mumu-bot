@@ -23,9 +23,19 @@ public class Caching {
 
         try {
             String lunchUrl;
-            Utils.connectToURL(Constants.LUNCHES_URL);
+            Document doc;
+            int statusCode = Utils.connect("https://www.cafemumu.ru/catalog/lanchi/");
+            if (statusCode != 200) {
+                statusCode = Utils.connect(Constants.LUNCHES_URL);
+                if (statusCode != 200) {
+                    return false;
+                }
+                doc = Jsoup.connect(Constants.LUNCHES_URL).get();
+            } else {
+                doc = Jsoup.connect("https://www.cafemumu.ru/catalog/lanchi/").get();
+            }
+
             // Get urls with lunches
-            Document doc = Jsoup.connect(Constants.LUNCHES_URL).get();
             Elements elements = doc.select("div.menu-container-text > div.food-item-title.lunch-item-title");
             for (Element item : elements) {
                 lunchUrl = item.select("a").attr("abs:href");
