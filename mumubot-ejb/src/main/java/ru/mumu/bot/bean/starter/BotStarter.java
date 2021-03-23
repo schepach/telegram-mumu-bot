@@ -1,8 +1,8 @@
 package ru.mumu.bot.bean.starter;
 
-import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.generics.BotSession;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.mumu.bot.MumuBot;
 import ru.mumu.bot.bean.scheduler.BroadcastingScheduler;
 import ru.mumu.bot.bean.scheduler.CachingScheduler;
@@ -33,12 +33,11 @@ public class BotStarter {
 
     @PostConstruct
     public void init() {
-        logger.log(Level.SEVERE, "ApiContextInitializer...");
-        ApiContextInitializer.init();
-        logger.log(Level.SEVERE, "Initialization BotsApi....");
-        TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
-
         try {
+            logger.log(Level.SEVERE, "ApiContextInitializer...");
+            logger.log(Level.SEVERE, "Initialization BotsApi....");
+            TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+
             logger.log(Level.SEVERE, "OK!");
             logger.log(Level.SEVERE, "Register MumuBot....");
             botSession = telegramBotsApi.registerBot(new MumuBot(idbOperations));
@@ -63,6 +62,10 @@ public class BotStarter {
     public void cleanup() {
         try {
             logger.log(Level.SEVERE, "Stop botSession...");
+            if (botSession == null) {
+                logger.log(Level.SEVERE, "botSession is null, return...");
+                return;
+            }
             botSession.stop();
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Destroyed exception: ", ex);

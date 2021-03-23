@@ -54,7 +54,10 @@ public class BroadcastingScheduler {
             for (String chatId : chatIds) {
                 logger.log(Level.SEVERE, "Broadcasting for chatId - {0}", chatId);
                 try {
-                    new MumuBot().execute(new SendMessage().setChatId(chatId).setText(lunchInfo));
+                    SendMessage sendMessage = new SendMessage();
+                    sendMessage.setChatId(chatId);
+                    sendMessage.setText(lunchInfo);
+                    new MumuBot().execute(sendMessage);
                 } catch (TelegramApiException ex) {
                     logger.log(Level.SEVERE, "Broadcasting error for chatId - {0}, because - {1}", new Object[]{chatId, ex.getMessage()});
                 }
