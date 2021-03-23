@@ -13,14 +13,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class CafeMumuEntity extends AbstractCafe {
 
     private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
-    private static final Pattern PATTERN_MENU = Pattern.compile("([а-яА-я]*\\s?-?([а-яА-я]*)?,?){1,}(\\([а-яА-Я]*(,\\s?[а-яА-Я]*){1,}\\))?,?\\s?([а-яА-я]*\\s?-?([а-яА-я]*)?,?){1,}");
-    private static final Pattern PATTERN_MENU_REPLACE = Pattern.compile("(\\([а-яА-Я]*(,\\s?[а-яА-Я]*){1,}\\))");
     private final String command;
 
     public CafeMumuEntity() {
@@ -127,10 +123,11 @@ public class CafeMumuEntity extends AbstractCafe {
     }
 
     private String getLunches(List<String> urls) {
-        String price = null;
+        String price;
         String caption = null;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(Constants.TIME_LUNCH.concat("\n").concat("\uD83E\uDD57\uD83C\uDF72\uD83C\uDF5D\uD83E\uDD64"));
+        String priceOfMenu = null;
 
         try {
             for (String urlWithMenu : urls) {
@@ -151,32 +148,21 @@ public class CafeMumuEntity extends AbstractCafe {
                     // Get price
                     price = item.select("div div.food-el-price-block div.price-block").text();
                     logger.log(Level.INFO, "price - {0}", price);
+                    priceOfMenu = "Стоимость обеда:" + price;
                 }
 
                 if (menu == null || menu.isEmpty()) {
                     logger.log(Level.SEVERE, "menu is null or is empty!");
                     return Constants.UNEXPECTED_ERROR;
                 }
+                logger.log(Level.INFO, "Menu BEFORE changes - {0}", menu);
 
-                String splitMenu = null;
-                Matcher matcher = PATTERN_MENU.matcher(menu.replaceAll("\"", ""));
-                // Find substring by pattern
-                if (matcher.find()) {
-                    splitMenu = matcher.group();
-                }
-                logger.log(Level.INFO, "splitMenu: {0}", splitMenu);
+                menu = menu.replaceAll("\\(?\\d*,\\s?\\d*\\s?кг\\)", "");
+                logger.log(Level.INFO, "Menu AFTER changes - {0}", menu);
 
-                if (splitMenu == null || splitMenu.isEmpty()) {
-                    logger.log(Level.SEVERE, "splitMenu is null or is empty!");
-                    return Constants.UNEXPECTED_ERROR;
-                }
+                String[] menuItems = menu.split(",");
 
-                // Replace elements from splitMenu, which match of pattern and point by empty
-                splitMenu = splitMenu.replaceAll(PATTERN_MENU_REPLACE.pattern(), "").replaceAll("\\.", "");
-
-                String[] menuItems = splitMenu.split(",");
-
-                stringBuilder.append("\n").append(caption).append(": \n");
+                stringBuilder.append("\n").append(priceOfMenu).append("\n").append(caption).append(": \n");
                 int count = 1;
                 for (String item : menuItems) {
                     logger.log(Level.INFO, "menuItem - {0}", item);
@@ -184,7 +170,6 @@ public class CafeMumuEntity extends AbstractCafe {
                     count++;
                 }
             }
-            stringBuilder.insert(0, "Стоимость обеда: ".concat(price != null ? price : "").concat("\n"));
 
             logger.log(Level.INFO, "Final menu in mumu: {0}\n", stringBuilder.toString());
         } catch (Exception ex) {
