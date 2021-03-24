@@ -1,41 +1,20 @@
-# TelegramMumuBot
+# Telegram lunchmumubot
 
----About bot---
+About bot
 =====================
-This is Telegram bot for cafe [mumu](http://cafemumu.ru). <br/>
-It shows list lunch in mumu cafe for you.
+It's unofficial Telegram bot for cafe [mumu](https://www.cafemumu.ru). <br/>
+Bot shows lunches on weekdays by command.
+By the way! Bot is broadcasting menu for users everyday at 11:05 AM.
 
-And bonus - It shows list lunch in [Grand Victoria cafe] (http://restaurantgrandvictoria.ru/) for you.
+And bonus - bot shows lunches in [Grand Victoria cafe](http://restaurantgrandvictoria.ru).
 
-Search him in Telegram: [@lunchmumubot](https://telegram.me/lunchmumubot)
+Search it in Telegram: [@lunchmumubot](https://telegram.me/lunchmumubot)
 
----Instructions for use bot---
+Instruction for build and deploy
 =====================
-
-**If you want run from IDE:**
-
 1. Download or clone [repository](https://github.com/schepach/TelegramMumuBot.git)
-2. Set your botname and token in `MumuBot.java`
-3. Change path for log file `log4j.properties`
-4. Run `Main.java`
-5. Enjoy!
-
-**If you want run from console:**
-
-1. Download or clone [repository](https://github.com/schepach/TelegramMumuBot.git)
-2. Set your botname and token in `MumuBot.java`
-3. Change path for log file `log4j.properties`
-4. Build with `maven`
-5. Go to `target` folder and enter `java -jar *name*.jar`
+2. Set your botName and botToken in `MumuBot.java` class
+3. Build project with `maven` (`mvn clean package`)
+4. Go to the `target` folder and deploy `.ear` file. (For example, on Wildfly Application Server)
+5. Configure datasource for SQLite ([instruction](https://t.me/alexeywrites/30) by Russian)    
 6. Enjoy!
-
----Screenshots---
-=====================
-![StartWindow](https://photos-4.dropbox.com/t/2/AAByf2svEzfDUbkLHhZRhUMFJByjNrGtIhi0FLhL2AZVnw/12/141806364/png/32x32/3/1480881600/0/2/StartWindow.png/EPT7y2wYroUKIAIoAg/8y_C_GQ7eGUr9qHpj8f2IW7UZDNjZlOjHzqBN-ZPl-Q?size_mode=3&dl=0&size=1600x1200) <br/>
-
-![CommandsStartHelp](https://photos-6.dropbox.com/t/2/AABjZwVKit5cgsNhao7HTwhJ7O1QmvFCeaQfv-lpvRvpNw/12/141806364/png/32x32/3/1480881600/0/2/start%3Ahelp.png/EPT7y2wYsIUKIAIoAg/FnPB-XedInte6MUcT7nT1R7fsqre6-lY1FuZ_-5C6_I?size_mode=3&dl=0&size=1600x1200) <br/>
-
-![CommandWednesday](https://photos-5.dropbox.com/t/2/AAALkRKXwVGVZswX6AMgHCeTkR4jHGJ89trjhDf93C_Utw/12/141806364/png/32x32/3/1480881600/0/2/wednesday.png/EPT7y2wYroUKIAIoAg/7pyVFPl7CU-aJY8NrBaABNYNWmsJyfTDedi_7iiZ7aU?size_mode=3&dl=0&size=1600x1200) <br/>
-
-![CommandVicroria](https://photos-1.dropbox.com/t/2/AACnPgFNLToZB5IePy3aB8nZIWm5GTNe46KA3hDBcsVCtQ/12/141806364/png/32x32/3/1480881600/0/2/victoria.png/EPT7y2wYroUKIAIoAg/ZpJNrhch4HH-_kepvEIjicAdLWOKbYEukeVypEmoagM?size_mode=3&dl=0&size=1600x1200) <br/>
-
