@@ -42,7 +42,7 @@ public class CafeMumuEntity extends AbstractCafe {
         List<String> urlList = getUrlList(command);
 
         if (urlList == null || urlList.isEmpty()) {
-            logger.log(Level.SEVERE, "urls is null or is empty!");
+            logger.log(Level.SEVERE, "urls for command - {0} is null or is empty!", command);
             return Constants.UNEXPECTED_ERROR;
         }
 
