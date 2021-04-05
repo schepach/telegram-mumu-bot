@@ -112,8 +112,6 @@ public class CafeMumuEntity extends AbstractCafe {
                         || ((entry.getKey().contains("pyatnitsa") || entry.getKey().contains("pt")) && command.equals(Constants.FRIDAY))) {
                     logger.log(Level.INFO, "url {0} is OK, add to list...", entry.getKey());
                     urlList.add(entry.getKey());
-                } else {
-                    logger.log(Level.SEVERE, "url {0} is bad...", entry.getKey());
                 }
             }
         } catch (Exception ex) {
