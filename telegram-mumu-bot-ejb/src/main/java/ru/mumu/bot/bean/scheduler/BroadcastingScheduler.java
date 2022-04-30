@@ -5,7 +5,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.mumu.bot.MumuBot;
 import ru.mumu.bot.constants.Constants;
 import ru.mumu.bot.db.IDBOperations;
-import ru.mumu.bot.redis.RedisManager;
+import ru.mumu.bot.redis.RedisEntity;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -26,7 +26,7 @@ public class BroadcastingScheduler {
         logger.log(Level.SEVERE, "Start broadcasting menu...");
 
         try {
-            List<String> chatIds = RedisManager.REDIS_STORE.lrange("MUMU_CHATID", 0, -1);
+            List<String> chatIds = RedisEntity.getInstance().getElements("MUMU_CHATID");
 
             if (chatIds == null || chatIds.isEmpty()) {
                 logger.log(Level.SEVERE, "chatIds MUMU_CHATID is null or is empty");

@@ -3,9 +3,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>mumubot</artifactId>
+        <artifactId>telegram-mumu-bot</artifactId>
         <groupId>ru.bot.welp</groupId>
-        <version>4.2.1</version>
+        <version>4.3.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -41,7 +41,7 @@
     <dependencies>
         <dependency>
             <groupId>ru.bot.welp</groupId>
-            <artifactId>mumubot-ejb</artifactId>
+            <artifactId>telegram-mumu-bot-ejb</artifactId>
             <version>${project.version}</version>
             <type>ejb</type>
         </dependency>

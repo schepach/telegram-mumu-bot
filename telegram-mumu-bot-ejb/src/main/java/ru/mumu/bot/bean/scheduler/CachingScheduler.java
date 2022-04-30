@@ -33,9 +33,10 @@ public class CachingScheduler {
             }
 
             Caching.URL_MAP.put("done", "true");
-            logger.log(Level.SEVERE, "Caching done...");
+            logger.log(Level.SEVERE, "Caching done...\nInserting menu items to DB...");
 
             String menuInfo;
+            int count = 0;
             for (String day : Constants.getDaysOfWeek()) {
                 menuInfo = BotHelper.getInfo(day);
 
@@ -44,10 +45,12 @@ public class CachingScheduler {
 
                 if (idbOperations.selectDataFromDB(day) == null) {
                     idbOperations.insertDataToDB(day, menuInfo);
-                    continue;
+                } else {
+                    idbOperations.updateDataToDB(day, menuInfo);
                 }
-                idbOperations.updateDataToDB(day, menuInfo);
+                count++;
             }
+            logger.log(Level.SEVERE, "Inserted of menu items - {0}... Done.", count);
 
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Exception: ", ex);

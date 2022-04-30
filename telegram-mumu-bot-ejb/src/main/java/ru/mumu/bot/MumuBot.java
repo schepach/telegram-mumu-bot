@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.mumu.bot.constants.Constants;
 import ru.mumu.bot.db.IDBOperations;
-import ru.mumu.bot.redis.RedisManager;
+import ru.mumu.bot.redis.RedisEntity;
 import ru.mumu.bot.utils.BotHelper;
 import ru.mumu.bot.utils.Utils;
 
@@ -22,13 +22,19 @@ public class MumuBot extends TelegramLongPollingBot {
 
     private static final Logger logger = Logger.getLogger(MumuBot.class.getSimpleName());
     private IDBOperations idbOperations;
+    private final String botName;
+    private final String botToken;
 
     public MumuBot() {
+        this.botName = RedisEntity.getInstance().getElement("mumu_botName");
+        this.botToken = RedisEntity.getInstance().getElement("mumu_botToken");
     }
 
     @Inject
     public MumuBot(IDBOperations idbOperations) {
         this.idbOperations = idbOperations;
+        this.botName = RedisEntity.getInstance().getElement("mumu_botName");
+        this.botToken = RedisEntity.getInstance().getElement("mumu_botToken");
     }
 
     @Override
@@ -41,8 +47,6 @@ public class MumuBot extends TelegramLongPollingBot {
         Message message = update.getMessage();
 
         if (message != null && message.hasText()) {
-
-            RedisManager.checkRedisStore(String.valueOf(message.getChatId()));
 
             logger.log(Level.INFO, "FirstName: {0}, LastName: {1}, UserName: {2} \n" +
                             "UserId: {3}, ChatId: {4}, CommandInput: {5}",
@@ -90,11 +94,11 @@ public class MumuBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "botname";
+        return this.botName;
     }
 
     @Override
     public String getBotToken() {
-        return "token";
+        return this.botToken;
     }
 }

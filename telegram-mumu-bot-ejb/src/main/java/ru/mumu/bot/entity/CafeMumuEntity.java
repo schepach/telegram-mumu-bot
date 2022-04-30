@@ -42,7 +42,7 @@ public class CafeMumuEntity extends AbstractCafe {
         List<String> urlList = getUrlList(command);
 
         if (urlList == null || urlList.isEmpty()) {
-            logger.log(Level.SEVERE, "urls is null or is empty!");
+            logger.log(Level.SEVERE, "urls for command - {0} is null or is empty!", command);
             return Constants.UNEXPECTED_ERROR;
         }
 
@@ -105,11 +105,11 @@ public class CafeMumuEntity extends AbstractCafe {
         try {
             for (Map.Entry<String, String> entry : Caching.URL_MAP.entrySet()) {
                 logger.log(Level.INFO, "check url - {0}", entry.getKey());
-                if (entry.getKey().contains("ponedelnik") && command.equals(Constants.MONDAY)
-                        || (entry.getKey().contains("vtornik") && command.equals(Constants.TUESDAY))
-                        || (entry.getKey().contains("sreda") && command.equals(Constants.WEDNESDAY))
-                        || (entry.getKey().contains("chetverg") && command.equals(Constants.THURSDAY))
-                        || (entry.getKey().contains("pyatnitsa") && command.equals(Constants.FRIDAY))) {
+                if (((entry.getKey().contains("pn") || entry.getKey().contains("ponedelnik")) && command.equals(Constants.MONDAY))
+                        || ((entry.getKey().contains("vtornik") || entry.getKey().contains("vt")) && command.equals(Constants.TUESDAY))
+                        || ((entry.getKey().contains("sr") || entry.getKey().contains("sreda")) && command.equals(Constants.WEDNESDAY))
+                        || ((entry.getKey().contains("cht") || entry.getKey().contains("chetverg")) && command.equals(Constants.THURSDAY))
+                        || ((entry.getKey().contains("pyatnitsa") || entry.getKey().contains("pt")) && command.equals(Constants.FRIDAY))) {
                     logger.log(Level.INFO, "url {0} is OK, add to list...", entry.getKey());
                     urlList.add(entry.getKey());
                 }
