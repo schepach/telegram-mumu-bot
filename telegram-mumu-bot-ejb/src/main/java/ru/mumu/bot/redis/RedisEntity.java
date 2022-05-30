@@ -157,7 +157,7 @@ public class RedisEntity {
         }
     }
 
-    public void checkRedisStore(String chatId) {
+    public void saveUserToRedis(String chatId) {
 
         List<String> redisList = RedisEntity.getInstance().getElements("MUMU_CHATID");
 

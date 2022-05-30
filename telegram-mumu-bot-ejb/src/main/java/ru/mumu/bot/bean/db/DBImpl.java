@@ -1,7 +1,5 @@
 package ru.mumu.bot.bean.db;
 
-import ru.mumu.bot.db.IDBOperations;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;

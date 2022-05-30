@@ -16,19 +16,19 @@ public class Utils {
     private static final Logger logger = Logger.getLogger(Utils.class.getSimpleName());
 
     public static void connectToURL(String url) throws IOException {
-        logger.log(Level.SEVERE, "ConnectTo {0}", url);
+        logger.log(Level.SEVERE, "Connect to {0}", url);
         HttpClient client = HttpClientBuilder.create().build();
         HttpGet request = new HttpGet(url);
         HttpResponse response = client.execute(request);
-        logger.log(Level.SEVERE, "Response Code: {0}", response.getStatusLine().getStatusCode());
+        logger.log(Level.SEVERE, "Response code - {0}", response.getStatusLine().getStatusCode());
     }
 
     public static int connect(String url) throws IOException {
-        logger.log(Level.SEVERE, "ConnectTo {0}", url);
+        logger.log(Level.SEVERE, "Connect to {0}", url);
         HttpClient client = HttpClientBuilder.create().build();
         HttpGet request = new HttpGet(url);
         HttpResponse response = client.execute(request);
-        logger.log(Level.SEVERE, "Response Code: {0}", response.getStatusLine().getStatusCode());
+        logger.log(Level.SEVERE, "Response code - {0}", response.getStatusLine().getStatusCode());
         return response.getStatusLine().getStatusCode();
     }
 

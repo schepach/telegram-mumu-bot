@@ -1,4 +1,4 @@
-package ru.mumu.bot.db;
+package ru.mumu.bot.bean.db;
 
 public interface IDBOperations {
 

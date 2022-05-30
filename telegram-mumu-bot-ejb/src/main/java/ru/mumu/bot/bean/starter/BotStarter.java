@@ -4,9 +4,10 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.generics.BotSession;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.mumu.bot.MumuBot;
-import ru.mumu.bot.bean.scheduler.BroadcastingScheduler;
-import ru.mumu.bot.bean.scheduler.CachingScheduler;
-import ru.mumu.bot.db.IDBOperations;
+import ru.mumu.bot.bean.broadcasting.IBroadcast;
+import ru.mumu.bot.bean.db.IDBOperations;
+import ru.mumu.bot.bean.scheduler.broadcast.IBroadcastSchedule;
+import ru.mumu.bot.bean.scheduler.cache.ICacheSchedule;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -22,11 +23,13 @@ import java.util.logging.Logger;
 public class BotStarter {
 
     @Inject
-    CachingScheduler cachingScheduler;
+    private ICacheSchedule cachingScheduler;
     @Inject
-    BroadcastingScheduler broadcastScheduler;
+    private IBroadcastSchedule broadcastScheduler;
     @Inject
-    IDBOperations idbOperations;
+    private IDBOperations idbOperations;
+    @Inject
+    private IBroadcast broadcast;
 
     private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
     private BotSession botSession;
@@ -40,7 +43,7 @@ public class BotStarter {
 
             logger.log(Level.SEVERE, "OK!");
             logger.log(Level.SEVERE, "Register MumuBot....");
-            botSession = telegramBotsApi.registerBot(new MumuBot(idbOperations));
+            botSession = telegramBotsApi.registerBot(new MumuBot(idbOperations, broadcast));
             logger.log(Level.SEVERE, "Register done!");
             logger.log(Level.SEVERE, "MumuBot was started...");
         } catch (Exception ex) {
@@ -50,12 +53,12 @@ public class BotStarter {
 
     @Schedule(dayOfWeek = "Mon-Fri", hour = "11")
     public void cachingMenu() {
-        cachingScheduler.run();
+        cachingScheduler.startCachingMenu();
     }
 
     @Schedule(dayOfWeek = "Mon-Fri", hour = "11", minute = "5")
     public void broadcastingMenu() {
-        broadcastScheduler.run();
+        broadcastScheduler.sendLunchMenu();
     }
 
     @PreDestroy
