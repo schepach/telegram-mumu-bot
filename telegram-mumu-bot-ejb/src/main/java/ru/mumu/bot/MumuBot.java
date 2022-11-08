@@ -96,13 +96,12 @@ public class MumuBot extends TelegramLongPollingBot {
     }
 
     private void sendMessage(Message message, String textMessage) {
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setText(Utils.getTextForUser(message, textMessage));
-        sendMessage.enableMarkdown(true);
-        sendMessage.setChatId(message.getChatId().toString());
-        sendMessage.setReplyToMessageId(message.getMessageId());
         try {
-            execute(sendMessage);
+            execute(SendMessage.builder()
+                    .text(Utils.getTextForUser(message, textMessage))
+                    .chatId(message.getChatId().toString())
+                    .replyToMessageId(message.getMessageId())
+                    .build());
         } catch (TelegramApiException ex) {
             logger.log(Level.SEVERE, "TelegramApiException: ", ex);
         }
